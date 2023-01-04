@@ -39,7 +39,7 @@
             <a href="https://dbes.cz" target="_blank" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
                 <img src="{{asset("assets/images/dobes.svg")}}" alt="Michal Dobeš favicon" height="24">
             </a>
-            <span class="mb-3 mb-md-0 text-muted"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none">© 2022 Michal Dobeš</a></span>
+            <span class="mb-3 mb-md-0 text-muted me-4"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none">© 2022 Michal Dobeš</a></span> <span class="text-muted">({{config("app.name")}} v{{config('app.version')}})</span>
         </div>
 
         <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">

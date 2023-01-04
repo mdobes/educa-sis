@@ -4,7 +4,6 @@
 
 @section("content")
     <h1>Platba ID {{$data->variable_symbol}}</h1>
-
     <table class="table">
         <thead>
         <tr>
@@ -23,6 +22,32 @@
             <td>{{\Carbon\Carbon::parse($data->due)->format("d.m.Y H:i")}}</td>
             <td></td>
         </tr>
+        </tbody>
+    </table>
+    Zbývá zaplatit {{$data->remain}} Kč, již zaplaceno {{$data->paid}} Kč.
+
+    <h2>Proběhlé transakce u platby</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Částka</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Vytvořeno</th>
+        </tr>
+        </thead>
+        <tbody>
+        @forelse($data->transactions as $transaction)
+            <tr>
+                <td>{{$transaction->amount}} Kč</td>
+                <td>{{$transaction->author}}</td>
+                <td>{{\Carbon\Carbon::parse($transaction->created_at)->format("d.m.Y")}}</td>
+                <td></td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="4">Neproběhly žádné platby.</td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
 @endsection
