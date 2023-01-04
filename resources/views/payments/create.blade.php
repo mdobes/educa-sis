@@ -9,7 +9,7 @@
         @endforeach
     </ul>
 
-    {!! Form::open(["url" => "/payment", "method" => "post", "id" => "add-form"]) !!}
+    {!! Form::open(["url" => url("payments"), "method" => "post", "id" => "add-form"]) !!}
         @include("payments.form")
     {!! Form::close() !!}
 @endsection

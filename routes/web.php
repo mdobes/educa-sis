@@ -19,8 +19,9 @@ Route::get('/', function () {
     return view("main", compact("data"));
 });
 
-Route::get("/payment", [\App\Http\Controllers\PaymentController::class, "index"]);
-Route::get("/payment/create", [\App\Http\Controllers\PaymentController::class, "create"]);
-Route::post("/payment", [\App\Http\Controllers\PaymentController::class, "store"]);
-Route::get("/payment/{id}", [\App\Http\Controllers\PaymentController::class, "show"])->name("payment.detail");
-
+Route::controller(\App\Http\Controllers\PaymentController::class)->group(function () {
+    Route::get("/payment", "index")->name("payment.index");
+    Route::get("/payment/create","create")->name("payment.create");
+    Route::post("/payment","store")->name("payment.store");
+    Route::get("/payment/{id}", "show")->name("payment.detail");
+});
