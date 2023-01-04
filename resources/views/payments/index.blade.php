@@ -36,4 +36,8 @@
     @endforelse
         </tbody>
     </table>
+
+    {{ $data->links() }}
+
+
 @endsection

@@ -16,7 +16,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data = PaymentResource::collection(Payment::orderBy("due", "asc")->get());
+        $data = Payment::orderBy("due", "asc")->paginate(15);
 
         return view('payments.index', compact("data"));
     }
