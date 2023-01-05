@@ -16,6 +16,7 @@
             <th scope="col">Variabilní symbol</th>
             <th scope="col">Popis platby</th>
             <th scope="col">Částka</th>
+            <th scope="col">Zbývá</th>
             <th scope="col">Splatnost</th>
             <th scope="col">Akce</th>
         </tr>
@@ -26,8 +27,9 @@
             <td>{{$payment->variable_symbol}}</td>
             <td>{{$payment->title}}</td>
             <td>{{$payment->amount}} Kč</td>
+            <td>{{$payment->remain}} Kč</td>
             <td>{{\Carbon\Carbon::parse($payment->due)->format("d.m.Y")}}</td>
-            <td></td>
+            <td><a href="{{url("/payment/$payment->variable_symbol")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a></td>
         </tr>
         @empty
         <tr>

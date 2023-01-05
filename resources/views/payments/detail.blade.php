@@ -3,6 +3,10 @@
 @section("title", "Platba ID {{$data->variable_symbol}}")
 
 @section("content")
+    <div class="actions">
+        <a href="/payment/"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
+    </div>
+
     <h1>Platba ID {{$data->variable_symbol}}</h1>
     <table class="table">
         <thead>
