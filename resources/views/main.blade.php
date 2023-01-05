@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Educa SIS | @yield("title")</title>
-    <link href="{{asset("assets/css/bootstrap.min.css")}}" rel="stylesheet">
+    <link href="{{asset("assets/css/scss/bootstrap.css")}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset("assets/css/tabler-icons.min.css")}}">
 </head>
 <body>
@@ -30,6 +30,15 @@
 </nav>
 
 <div class="container mt-5 mb-5">
+
+    <div class="header mb-3">
+        <h1><b>@yield("title")</b></h1>
+    </div>
+
+    <div class="actions mb-3">
+        @yield("actions")
+    </div>
+
     @yield("content")
 </div>
 

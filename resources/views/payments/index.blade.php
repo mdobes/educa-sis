@@ -2,14 +2,11 @@
 
 @section("title", "Moje platby")
 
+@section("actions")
+    <a href="/payment/create"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
+@endsection
+
 @section("content")
-
-    <div class="actions">
-        <a href="/payment/create"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
-    </div>
-
-    <h1>Moje platby</h1>
-
     <table class="table">
         <thead>
         <tr>
