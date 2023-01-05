@@ -23,7 +23,7 @@
         </thead>
         <tbody>
     @forelse($data as $payment)
-        <tr>
+        <tr @if(\Carbon\Carbon::parse($payment->due) < \Carbon\Carbon::now() && $payment->remain > 0) class="bg-danger bg-opacity-75" @endif>
             <td>{{$payment->variable_symbol}}</td>
             <td>{{$payment->title}}</td>
             <td>{{$payment->amount}} Kč</td>

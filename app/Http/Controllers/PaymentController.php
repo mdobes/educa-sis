@@ -6,6 +6,7 @@ use App\Http\Requests\PaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -16,8 +17,21 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data = Payment::orderBy("due", "asc")->paginate(15);
-
+        $data = DB::table('payments_list')
+            ->leftJoin('payments_transactions', 'payments_list.variable_symbol', '=', 'payments_transactions.variable_symbol')
+            ->select(
+                'payments_list.variable_symbol AS variable_symbol',
+                'payments_list.title as title',
+                'payments_list.amount as amount',
+                'payments_list.due as due',
+                DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
+                DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
+            )
+            ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
+            ->orderBy("due", "asc")
+            ->having("remain", "!=", 0)
+            ->paginate(15);
+        
         return view('payments.index', compact("data"));
     }
 

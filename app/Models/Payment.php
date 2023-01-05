@@ -12,6 +12,7 @@ class Payment extends Model
     protected $table = 'payments_list';
     protected $primaryKey = 'variable_symbol';
 
+    protected $appends = ["remain"];
     protected $fillable = ["payer", "author", "type", "title", "amount", "due"];
 
     public function transactions(){
