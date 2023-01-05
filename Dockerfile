@@ -1,4 +1,4 @@
-FROM webdevops/php-nginx:7.4-alpine
+FROM webdevops/php-nginx:8.1
 
 # Install Laravel framework system requirements (https://laravel.com/docs/8.x/deployment#optimizing-configuration-loading)
 RUN apk add oniguruma-dev postgresql-dev libxml2-dev
