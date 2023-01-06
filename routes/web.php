@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view("main", compact("data"));
 });
 
-Route::controller(\App\Http\Controllers\PaymentController::class)->group(function () {
+Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
     Route::get("/payment", "index")->name("payment.index");
     Route::get("/payment/create","create")->name("payment.create");
     Route::post("/payment","store")->name("payment.store");

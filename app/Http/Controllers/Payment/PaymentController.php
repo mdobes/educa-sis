@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Payment;
 
-use App\Http\Requests\PaymentRequest;
-use App\Http\Resources\PaymentResource;
-use App\Models\Payment;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Payment\PaymentRequest;
+use App\Models\Payment\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,7 +31,7 @@ class PaymentController extends Controller
             ->orderBy("due", "asc")
             ->having("remain", "!=", 0)
             ->paginate(15);
-        
+
         return view('payments.index', compact("data"));
     }
 

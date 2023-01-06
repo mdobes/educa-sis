@@ -2,14 +2,12 @@
 
 namespace Database\Factories;
 
-use Faker\Core\DateTime;
 use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Date;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Payment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Payment\Payment>
  */
 class PaymentFactory extends Factory
 {
