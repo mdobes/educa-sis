@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $data = ["menu" => "home"];
-
+    return phpinfo();
     return view("main", compact("data"));
 });
 
