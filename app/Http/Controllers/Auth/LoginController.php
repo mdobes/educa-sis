@@ -31,9 +31,11 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            return redirect('/');
+            $message = "Úspěšně přihlášen.";
+            return redirect('/')->with(compact("message"));
         }else{
-            return view("login", compact("credentials"));
+            $message = "Špatně zadané uživatelské jméno nebo heslo.";
+            return view("login", compact("credentials", "message"));
         }
     }
 

@@ -25,9 +25,25 @@
                     <a class="nav-link {{request()->is('payment*') ? 'active' : ''}}" href="/payment">Správa plateb</a>
                 </li>
             </ul>
+            <ul class="navbar-nav d-flex">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
+                        <i class="ti ti-user-circle"></i> {{ Auth::user()->getName() }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/logout">Odhlásit se</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
+
+@if(isset($message))
+    <div class="alert alert-danger" role="alert">
+        {{$message}}
+    </div>
+@endif
 
 <div class="container mt-5 mb-5">
 
@@ -70,6 +86,6 @@
     </footer>
 </div>
 
-<script src="{{asset("assets/js/bootstrap.min.js")}}"></script>
+<script src="{{asset("assets/js/bootstrap.bundle.min.js")}}"></script>
 </body>
 </html>

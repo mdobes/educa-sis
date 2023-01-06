@@ -46,6 +46,13 @@
 <main class="form-signin w-100 m-auto">
     {!! Form::open(["url" => url("login"), "method" => "post", "id" => "login"]) !!}
         <img class="mb-5" src="{{asset("assets/images/logo.svg")}}" alt="Educa Logo" height="80">
+
+        @if(isset($message))
+        <div class="alert alert-danger" role="alert">
+            {{$message}}
+        </div>
+        @endif
+
         <h1 class="h3 mb-3 fw-normal">Přihlášení</h1>
 
         <div class="form-floating">
@@ -59,10 +66,21 @@
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Přihlásit se</button>
     <div class="mt-5">
-        <a href="https://dbes.cz" target="_blank" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-            <img src="{{asset("assets/images/dobes.svg")}}" alt="Michal Dobeš favicon" height="24">
-        </a><br>
-        <span class="mb-3 mb-md-0 text-muted"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none">© 2022 Michal Dobeš</a></span><br><span class="text-muted">({{config("app.name")}} v{{config('app.version')}})</span>
+        <span class="mb-3 mb-md-0 text-muted"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none"> <img src="{{asset("assets/images/dobes.svg")}}" alt="Michal Dobeš favicon" height="24"> © 2022 Michal Dobeš</a></span>
+        <hr>
+        <span class="text-muted">{{config("app.name")}} v{{config('app.version')}}</span>
+        <a class="text-muted" href="https://github.com/mdobes/educa-sis" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-git" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <circle cx="16" cy="12" r="1" />
+                <circle cx="12" cy="8" r="1" />
+                <circle cx="12" cy="16" r="1" />
+                <path d="M12 15v-6" />
+                <path d="M15 11l-2 -2" />
+                <path d="M11 7l-1.9 -1.9" />
+                <path d="M10.5 20.4l-6.9 -6.9c-.781 -.781 -.781 -2.219 0 -3l6.9 -6.9c.781 -.781 2.219 -.781 3 0l6.9 6.9c.781 .781 .781 2.219 0 3l-6.9 6.9c-.781 .781 -2.219 .781 -3 0z" />
+            </svg>
+        </a>
     </div>
 
     </form>

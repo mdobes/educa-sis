@@ -38,6 +38,8 @@
                     <b>Částka:</b> {{$data->amount}} Kč<br>
                     <b>Splatnost:</b> {{\Carbon\Carbon::parse($data->due)->format("d.m.Y")}}<br>
                     <b>Popis platby:</b> {{$data->title}}<br>
+                    <hr>
+                    <b>Vytvořil:</b> {{\App\Ldap\User::where("samaccountname", "=", $data->author)->get()[0]->getName()}}
                 </div>
             </div>
         </div>
@@ -55,7 +57,7 @@
                 @forelse($data->transactions as $transaction)
                     <tr>
                         <td>{{$transaction->amount}} Kč</td>
-                        <td>{{$transaction->author}}</td>
+                        <td>{{($transaction->author == "System") ? "System" : \App\Ldap\User::where("samaccountname", "=", $transaction->author)->get()[0]->getName()}}</td>
                         <td>{{\Carbon\Carbon::parse($transaction->created_at)->format("d.m.Y")}}</td>
                         <td></td>
                     </tr>
