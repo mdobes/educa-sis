@@ -42,7 +42,8 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        return view('payments.create');
+        $formButtonTitle = "Vytvořit";
+        return view('payments.create', compact("formButtonTitle"));
     }
 
     /**
@@ -76,11 +77,14 @@ class PaymentController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\View
      */
     public function edit($id)
     {
-        //
+        $data = Payment::findOrFail($id);
+        $formButtonTitle = "Editovat";
+        //return $data;
+        return view('payments.edit', compact("data", "formButtonTitle"));
     }
 
     /**

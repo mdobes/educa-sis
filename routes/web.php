@@ -21,7 +21,8 @@ Route::get('/', function () {
 
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
     Route::get("/payment", "index")->name("payment.index");
-    Route::get("/payment/create","create")->name("payment.create");
     Route::post("/payment","store")->name("payment.store");
+    Route::get("/payment/create","create")->name("payment.create");
+    Route::get("/payment/edit/{id}","edit")->name("payment.edit");
     Route::get("/payment/{id}", "show")->name("payment.detail");
 });

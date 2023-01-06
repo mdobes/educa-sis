@@ -3,7 +3,7 @@
 @section("title", "Moje platby")
 
 @section("actions")
-    <a href="/payment/create"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
+    <a href="{{url("/payment/create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
 @endsection
 
 @section("content")
@@ -26,7 +26,11 @@
             <td>{{$payment->amount}} Kč</td>
             <td>{{$payment->remain}} Kč</td>
             <td>{{\Carbon\Carbon::parse($payment->due)->format("d.m.Y")}}</td>
-            <td><a href="{{url("/payment/$payment->variable_symbol")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a></td>
+            <td>
+                <a href="{{url("/payment/$payment->variable_symbol")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>
+                <a href="{{url("/payment/edit/$payment->variable_symbol")}}" class="text-decoration-none"><i class="ti ti-edit"></i></a>
+            </td>
+
         </tr>
         @empty
         <tr>
