@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PaymentRequest;
 use App\Models\Payment\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
@@ -30,6 +31,7 @@ class PaymentController extends Controller
             ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
             ->orderBy("due", "asc")
             ->having("remain", "!=", 0)
+            ->where("payer", "=", Auth::user()->getAttribute("samaccountname")[0])
             ->paginate(15);
 
         return view('payments.index', compact("data"));
@@ -54,8 +56,11 @@ class PaymentController extends Controller
      */
     public function store(PaymentRequest $request)
     {
+        $data = $request->all();
+        $data["type"] = "normal";
+        $data["author"] = Auth::user()->getAttribute("samaccountname")[0];
 
-        $payment = Payment::create($request->all());
+        $payment = Payment::create($data);
 
         return redirect()->route("payment.detail", $payment->variable_symbol);
         //return $request->all();

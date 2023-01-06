@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Payment;
 
 use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,12 +20,14 @@ class PaymentFactory extends Factory
     {
         $date = Carbon::create(rand(2023, 2024), rand(1, 12), rand(1, 28), rand(0, 24), rand(1, 60), 0);
 
+        $names = ["jiri.stromsik", "michal.dobes", "ales.medek", "pavel.kramolis", "sarka.nedelova", "lenka.sevcikova", "vanda.adamcikova"];
+
         return [
-            "payer" => "michalldbs@seznam.cz",
-            "author" => "michal@dbes.cz",
+            "payer" => $names[array_rand($names)],
+            "author" => $names[array_rand($names)],
             "type" => "normal",
             "title" => Lorem::text("40"),
-            "amount" => rand(10, 6009),
+            "amount" => rand(10, 555),
             "due" => $date->format('Y-m-d H:i:s')
         ];
     }

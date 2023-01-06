@@ -8,6 +8,24 @@
 
 @section("content")
 
+    <div class="row mb-3">
+        <div class="col-12">
+            <h5 class="mb-0">
+            @if(\Carbon\Carbon::parse($data->due) < \Carbon\Carbon::now() && $data->remain > 0)
+               <span class="badge bg-danger text-uppercase">Po datu splatnosti</span>
+            @endif
+
+            @if($data->remain == 0)
+                <span class="badge bg-success text-uppercase">Uhrazeno</span>
+            @endif
+
+            @if($data->remain > 0)
+                <span class="badge bg-secondary text-uppercase">Zbývá uhradit {{$data->remain}} Kč</span>
+            @endif
+            </h5>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12 col-md-7">
             <h2>Detail platby</h2>
@@ -50,7 +68,5 @@
             </table>
         </div>
     </div>
-
-    Zbývá zaplatit {{$data->remain}} Kč, již zaplaceno {{$data->paid}} Kč.
 
 @endsection
