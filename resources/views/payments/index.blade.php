@@ -1,9 +1,9 @@
 @extends("main")
 
-@section("title", "Moje platby")
+@section("title", $title)
 
 @section("actions")
-    <a href="{{url("/payment/create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
+    <!--<a href="{{url("/payment/create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>-->
 @endsection
 
 @section("content")
@@ -34,7 +34,7 @@
         </tr>
         @empty
         <tr>
-            <td colspan="4">Nemáš žádné platby.</td>
+            <td colspan="6">Žádné platby nebyly nalezeny.</td>
         </tr>
     @endforelse
         </tbody>

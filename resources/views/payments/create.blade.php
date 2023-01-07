@@ -2,6 +2,10 @@
 
 @section("title", "Vytvoření platby")
 
+@section("actions")
+    <a href="{{ url()->previous() }}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
+@endsection
+
 @section("content")
     <ul>
         @foreach ($errors->all() as $error)

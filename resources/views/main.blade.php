@@ -19,11 +19,28 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link {{request()->is('/') ? 'active' : ''}}" href="/">Domů</a>
+                    <a class="nav-link {{request()->is('/') ? 'active' : ''}}" href="{{route("index")}}">Domů</a>
                 </li>
+                @can("payments.view.my")
                 <li class="nav-item">
-                    <a class="nav-link {{request()->is('payment*') ? 'active' : ''}}" href="/payment">Správa plateb</a>
+                    <a class="nav-link {{request()->is('payment') ? 'active' : ''}}" href="{{route("payment.my")}}">Platby</a>
                 </li>
+                @endcan
+                @hasanyrole("teachers|admins")
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{request()->is('payment') ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
+                        Správa plateb
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        @can("payments.view.created")
+                            <li><a class="dropdown-item" href="{{route("payment.created")}}">Mnou vytvořené platby</a></li>
+                        @endcan
+                        @can("payments.create")
+                            <li><a class="dropdown-item" href="{{route("payment.create")}}">Vytvořit platbu</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endhasanyrole
             </ul>
             <ul class="navbar-nav d-flex">
                 <li class="nav-item dropdown">

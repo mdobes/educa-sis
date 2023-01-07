@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1967b74f1c3e3d05a572d5737415a8a",
+    "content-hash": "c7cf4c6da1b7a751f5aaf34c674d2c2e",
     "packages": [
         {
             "name": "brick/math",
@@ -748,6 +748,55 @@
                 }
             ],
             "time": "2022-07-30T15:56:11+00:00"
+        },
+        {
+            "name": "granam/czech-vocative",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/granam/czech-vocative.git",
+                "reference": "c9ccf9e189ea56bbe78b0e71bf2212632cc6b7f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/granam/czech-vocative/zipball/c9ccf9e189ea56bbe78b0e71bf2212632cc6b7f3",
+                "reference": "c9ccf9e189ea56bbe78b0e71bf2212632cc6b7f3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=9.1",
+                "rector/rector": "^0.14.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Granam\\CzechVocative\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Petr Joachim",
+                    "email": "petr@joachim.cz"
+                },
+                {
+                    "name": "Jaroslav Týc",
+                    "email": "mail@jaroslavtyc.com"
+                }
+            ],
+            "description": "Inflect czech names and surnames.",
+            "support": {
+                "issues": "https://github.com/granam/czech-vocative/issues",
+                "source": "https://github.com/granam/czech-vocative/tree/2.2.0"
+            },
+            "time": "2022-09-05T10:42:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    $data = ["menu" => "home"];
-    return view("main", compact("data"));
-})->middleware('auth');
+Route::get('/', [\App\Http\Controllers\IndexController::class, "index"])->name("index");;
 
 Route::get('/users', function () {
     $users = User::all();
@@ -30,8 +27,11 @@ Route::get('/groups', function () {
     return $users;
 })->middleware('auth');
 
+Route::get('/group', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
+
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
-    Route::get("/payment", "index")->name("payment.index");
+    Route::get("/payment", ["uses" => "index", "type" => null])->name("payment.my");
+    Route::get("/payment/created", ["uses" => "index", "type" => "created"])->name("payment.created");
     Route::get("/payment/create","create")->name("payment.create");
     Route::get("/payment/{id}", "show")->name("payment.detail");
     Route::post("/payment","store")->name("payment.store");

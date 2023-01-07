@@ -22,25 +22,47 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = DB::table('payments_list')
-            ->leftJoin('payments_transactions', 'payments_list.variable_symbol', '=', 'payments_transactions.variable_symbol')
-            ->select(
-                'payments_list.variable_symbol AS variable_symbol',
-                'payments_list.title as title',
-                'payments_list.amount as amount',
-                'payments_list.due as due',
-                DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
-                DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
-            )
-            ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
-            ->orderBy("due", "asc")
-            ->having("remain", "!=", 0)
-            ->where("payer", "=", Auth::user()->username)
-            ->paginate(15);
+        $type = $request->route()->getAction()['type'];
+        if (!isset($type)) {
 
-        return view('payments.index', compact("data"));
+            $title = "Mé platby";
+
+            $data = DB::table('payments_list')
+                ->leftJoin('payments_transactions', 'payments_list.variable_symbol', '=', 'payments_transactions.variable_symbol')
+                ->select(
+                    'payments_list.variable_symbol AS variable_symbol',
+                    'payments_list.title as title',
+                    'payments_list.amount as amount',
+                    'payments_list.due as due',
+                    DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
+                    DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
+                )
+                ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
+                ->orderBy("due", "asc")
+                ->having("remain", "!=", 0)
+                ->where("payer", "=", Auth::user()->username)
+                ->paginate(15);
+        }else if ($type == "created"){
+            $title = "Mnou vytvořené platby";
+
+            $data = DB::table('payments_list')
+                ->leftJoin('payments_transactions', 'payments_list.variable_symbol', '=', 'payments_transactions.variable_symbol')
+                ->select(
+                    'payments_list.variable_symbol AS variable_symbol',
+                    'payments_list.title as title',
+                    'payments_list.amount as amount',
+                    'payments_list.due as due',
+                    DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
+                    DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
+                )
+                ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
+                ->orderBy("due", "asc")
+                ->where("payments_list.author", "=", Auth::user()->username)
+                ->paginate(15);
+        }
+        return view('payments.index', compact("data", "title"));
     }
 
     /**
