@@ -47,9 +47,13 @@
     {!! Form::open(["url" => url("login"), "method" => "post", "id" => "login"]) !!}
         <img class="mb-5" src="{{asset("assets/images/logo.svg")}}" alt="Educa Logo" height="80">
 
-        @if(isset($message))
-        <div class="alert alert-danger" role="alert">
-            {{$message}}
+        @if(!empty($errors->all()))
+        <div class="alert alert-secondary" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ __($error) }}</li>
+                @endforeach
+            </ul>
         </div>
         @endif
 
