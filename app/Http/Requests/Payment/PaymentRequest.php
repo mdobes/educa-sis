@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Payment;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PaymentRequest extends FormRequest
 {
@@ -25,9 +26,9 @@ class PaymentRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'amount' => 'required|int|max_digits::11',
-            'payer' => 'required|string|max:255',
-            'due' => 'required|date'
+            'amount' => 'required|int|min:1|max_digits::11',
+            'payer' => ['required', 'max:255', Rule::exists("users", "username")],
+            'due' => 'required|date|after:today'
         ];
     }
 }

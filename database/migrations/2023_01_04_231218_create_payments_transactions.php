@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('payments_transactions', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("variable_symbol", false, true);
+            $table->bigInteger("payment_id", false, true);
             $table->integer("amount");
             $table->string("author");
             $table->timestamps();
 
-            $table->foreign('variable_symbol')->references('variable_symbol')->on('payments_list');
+            $table->foreign('payment_id')->references('id')->on('payments_list');
         });
     }
 

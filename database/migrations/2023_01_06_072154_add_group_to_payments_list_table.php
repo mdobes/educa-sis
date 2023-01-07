@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('payments_list', function (Blueprint $table) {
-            $table->bigInteger("group", false)->unsigned()->nullable();
-
+            $table->bigInteger("group")->unsigned()->nullable();
             $table->foreign('group')->references('id')->on('payments_groups');
         });
     }

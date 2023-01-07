@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('payments_groups', function (Blueprint $table) {
             $table->id();
-            $table->string("author");
             $table->timestamps();
         });
     }

@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('payments_list', function (Blueprint $table) {
-            $table->id("variable_symbol");
+            $table->id();
+            $table->bigInteger("specific_symbol");
             $table->string("payer");
             $table->string("author");
             $table->string("type", 10);

@@ -25,44 +25,46 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         $type = $request->route()->getAction()['type'];
+        $showGrouping = false;
         if (!isset($type)) {
 
             $title = "Mé platby";
 
             $data = DB::table('payments_list')
-                ->leftJoin('payments_transactions', 'payments_list.variable_symbol', '=', 'payments_transactions.variable_symbol')
+                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
                 ->select(
-                    'payments_list.variable_symbol AS variable_symbol',
+                    'payments_list.id AS id',
                     'payments_list.title as title',
                     'payments_list.amount as amount',
                     'payments_list.due as due',
                     DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
                     DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
                 )
-                ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
+                ->groupBy('payments_list.id', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
                 ->orderBy("due", "asc")
                 ->having("remain", "!=", 0)
                 ->where("payer", "=", Auth::user()->username)
                 ->paginate(15);
         }else if ($type == "created"){
             $title = "Mnou vytvořené platby";
+            $showGrouping = true;
 
             $data = DB::table('payments_list')
-                ->leftJoin('payments_transactions', 'payments_list.variable_symbol', '=', 'payments_transactions.variable_symbol')
+                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
                 ->select(
-                    'payments_list.variable_symbol AS variable_symbol',
+                    'payments_list.id AS id',
                     'payments_list.title as title',
                     'payments_list.amount as amount',
                     'payments_list.due as due',
                     DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
                     DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
                 )
-                ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
+                ->groupBy('payments_list.id', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
                 ->orderBy("due", "asc")
                 ->where("payments_list.author", "=", Auth::user()->username)
                 ->paginate(15);
         }
-        return view('payments.index', compact("data", "title"));
+        return view('payments.index', compact("data", "title", "showGrouping"));
     }
 
     /**
@@ -84,14 +86,18 @@ class PaymentController extends Controller
      */
     public function store(PaymentRequest $request)
     {
+        $payment = Payment::where("payer", "=", $request->get("payer"))->latest()->firstOr(function () {
+            return ["id" => 0];
+        });
+
         $data = $request->all();
+        $data["specific_symbol"] = $payment["id"] + 1;
         $data["type"] = "normal";
-        $data["author"] = Auth::user()->getAttribute("samaccountname")[0];
+        $data["author"] = Auth::user()->username;
 
         $payment = Payment::create($data);
 
-        return redirect()->route("payment.detail", $payment->variable_symbol);
-        //return $request->all();
+        return redirect()->route("payment.detail", $payment->id);
     }
 
     /**

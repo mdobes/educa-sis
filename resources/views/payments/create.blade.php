@@ -9,7 +9,7 @@
 @section("content")
     <ul>
         @foreach ($errors->all() as $error)
-            <li>{{ __($error) }}</li>
+            <li>{{trans($error)}}</li>
         @endforeach
     </ul>
 
