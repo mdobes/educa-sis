@@ -37,7 +37,7 @@ class PaymentController extends Controller
             ->groupBy('payments_list.variable_symbol', 'payments_list.title', 'payments_list.amount', 'payments_list.due')
             ->orderBy("due", "asc")
             ->having("remain", "!=", 0)
-            ->where("payer", "=", Auth::user()->getAttribute("samaccountname")[0])
+            ->where("payer", "=", Auth::user()->username)
             ->paginate(15);
 
         return view('payments.index', compact("data"));

@@ -28,7 +28,7 @@
             <ul class="navbar-nav d-flex">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
-                        <i class="ti ti-user-circle"></i> {{ Auth::user()->getName() }}
+                        <i class="ti ti-user-circle"></i> {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="/logout">Odhlásit se</a></li>

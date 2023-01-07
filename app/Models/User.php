@@ -8,7 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+use LdapRecord\Laravel\Auth\LdapAuthenticatable;
+use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+
+class User extends Authenticatable implements LdapAuthenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -41,4 +44,34 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getLdapDomainColumn()
+    {
+        return 'domain';
+    }
+
+    public function getLdapGuidColumn()
+    {
+        return 'guid';
+    }
+
+    public function getLdapDomain()
+    {
+        // TODO: Implement getLdapDomain() method.
+    }
+
+    public function setLdapDomain($domain)
+    {
+        // TODO: Implement setLdapDomain() method.
+    }
+
+    public function getLdapGuid()
+    {
+        // TODO: Implement getLdapGuid() method.
+    }
+
+    public function setLdapGuid($guid)
+    {
+        // TODO: Implement setLdapGuid() method.
+    }
 }
