@@ -5,8 +5,15 @@
 @section("actions")
     @if($showGrouping)
         <div class="btn-group" role="group">
-            <a class="btn btn-primary">Seznam plateb</a>
-            <a class="btn btn-outline-primary">Skupiny plateb</a>
+            <a class="btn disabled btn-primary">Seznam plateb</a>
+            <a class="btn disabled btn-outline-primary">Skupiny plateb</a>
+        </div>
+        <div class="d-block mb-2"></div>
+    @endif
+    @if($showPaid)
+        <div class="btn-group" role="group">
+            <a href="{{ route("payment.my") }}" class="btn {{request()->is("payment") ? 'btn-primary' : 'btn-outline-primary'}}">Neuhrazené</a>
+            <a href="{{ route("payment.mypaid") }}" class="btn {{request()->is("payment/paid") ? 'btn-primary' : 'btn-outline-primary'}}">Uhrazené</a>
         </div>
         <div class="d-block mb-2"></div>
     @endif
@@ -34,10 +41,13 @@
             <td>{{$payment->remain}} Kč</td>
             <td>{{\Carbon\Carbon::parse($payment->due)->format("d.m.Y")}}</td>
             <td>
-                @can("payments.view")
-                    <a href="{{url("/payment/$payment->id")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>
-                @endcan
-                <a href="{{url("/payment/edit/$payment->id")}}" class="text-decoration-none"><i class="ti ti-edit"></i></a>
+                @if($payment->author == $username || $payment->payer == $username || $user->hasPermissionTo('payments.view'))
+                    <a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail platby" href="{{url("/payment/$payment->id")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>
+                @endif
+
+                @if($payment->author == $username || $user->hasPermissionTo('payments.edit'))
+                <a data-bs-toggle="tooltip" data-bs-title="Editovat platbu" href="{{url("/payment/edit/$payment->id")}}" class="text-decoration-none"><i class="ti ti-edit"></i></a>
+                @endif
             </td>
 
         </tr>

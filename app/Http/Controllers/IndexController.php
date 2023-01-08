@@ -22,9 +22,6 @@ class IndexController extends Controller
 
 
     public function giveStudentRole(){
-        $role = Role::create(['name' => 'admins']);
-        Permission::create(["name" => "payments.*"]);
-        $role->givePermissionTo("payments.*");
-        $users = Auth::user()->assignRole('admins');
+        $users = Auth::user()->assignRole('teachers');
     }
 }

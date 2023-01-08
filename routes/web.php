@@ -27,16 +27,23 @@ Route::get('/groups', function () {
     return $users;
 })->middleware('auth');
 
-Route::get('/group', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
+Route::get('/giverole', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
 
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
     Route::get("/payment", ["uses" => "index", "type" => null])->name("payment.my");
+    Route::get("/payment/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
     Route::get("/payment/created", ["uses" => "index", "type" => "created"])->name("payment.created");
     Route::get("/payment/create","create")->name("payment.create");
     Route::get("/payment/{id}", "show")->name("payment.detail");
     Route::post("/payment","store")->name("payment.store");
     Route::get("/payment/edit/{id}","edit")->name("payment.edit");
 })->middleware('auth');
+
+
+Route::controller(\App\Http\Controllers\Payment\TransactionsController::class)->group(function () {
+    Route::post("/transaction", "store")->name("transaction.store");
+})->middleware('auth');
+
 
 Route::controller(\App\Http\Controllers\Auth\LoginController::class)->group(function () {
     Route::get("/login", "get")->name("login.index");

@@ -72,6 +72,12 @@
         @yield("actions")
     </div>
 
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+
     @yield("content")
 </div>
 
@@ -104,5 +110,9 @@
 </div>
 
 <script src="{{asset("assets/js/bootstrap.bundle.min.js")}}"></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 </body>
 </html>

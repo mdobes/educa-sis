@@ -11,6 +11,10 @@ class Transaction extends Model
 
     protected $table = 'payments_transactions';
 
-    protected $fillable = ["variable_symbol", "amount", "author"];
+    protected $fillable = ["payment_id", "amount", "author"];
+
+    public function payment(){
+        $this->belongsTo(Payment::class, "payment_id", "id");
+    }
 
 }
