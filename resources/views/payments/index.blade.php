@@ -4,11 +4,7 @@
 
 @section("actions")
     @if($showGrouping)
-        <div class="btn-group" role="group">
-            <a class="btn disabled btn-primary">Seznam plateb</a>
-            <a class="btn disabled btn-outline-primary">Skupiny plateb</a>
-        </div>
-        <div class="d-block mb-2"></div>
+        @include("payments.includes.actions")
     @endif
     @if($showPaid)
         <div class="btn-group" role="group">
@@ -20,6 +16,9 @@
     @can("payments.create")
     <a href="{{route("payment.create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
     @endcan
+    @if($showBacklink)
+        <a href="{{ url()->previous() }}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
+    @endif
 @endsection
 
 @section("content")

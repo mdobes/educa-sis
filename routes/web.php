@@ -29,8 +29,13 @@ Route::get('/groups', function () {
 
 Route::get('/giverole', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
 
+Route::controller(\App\Http\Controllers\Payment\GroupController::class)->group(function () {
+    Route::get("/payment/group", ["uses" => "index"])->name("payment.group");
+})->middleware('auth');
+
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
     Route::get("/payment", ["uses" => "index", "type" => null])->name("payment.my");
+    Route::get("/payment/group/{id}", ["uses" => "index", "type" => "group"])->name("payment.group.detail");
     Route::get("/payment/searchpayers", "searchPayers")->name("payment.searchpayers");
     Route::get("/payment/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
     Route::get("/payment/created", ["uses" => "index", "type" => "created"])->name("payment.created");

@@ -11,6 +11,7 @@ use App\Models\UserGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Type\Integer;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -27,12 +28,13 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, ? String $id = null)
     {
         $type = $request->route()->getAction()['type'];
         $showGrouping = false;
         $showPaid = false;
         $showPayer = false;
+        $showBacklink = false;
         $user = Auth::user();
         $username = $user->username;
 
@@ -89,8 +91,22 @@ class PaymentController extends Controller
                 ->having("remain", "=", 0)
                 ->where("payments_list.payer", "=", Auth::user()->username)
                 ->paginate(15);
+        }else if ($type == "group"){
+            $group = Group::where("id", "=", $id)->firstOrFail();
+            $title = "Detail skupiny plateb ID $group->id";
+            $showPayer = true;
+            $showGrouping = true;
+            $showBacklink = true;
+
+            $data = DB::table('payments_list')
+                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
+                ->select($selectCols)
+                ->groupBy($groupByCols)
+                ->orderBy("due", "asc")
+                ->where("payments_list.group", "=", $group->id)
+                ->paginate(15);
         }
-        return view('payments.index', compact("data", "title", "showGrouping", "showPaid", "user", "username", "showPayer"));
+        return view('payments.index', compact("data", "title", "showGrouping", "showPaid", "user", "username", "showPayer", "showBacklink"));
     }
 
     /**
