@@ -6,6 +6,9 @@
     <title>Educa SIS | @yield("title")</title>
     <link href="{{asset("assets/css/scss/bootstrap.css")}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset("assets/css/tabler-icons.min.css")}}">
+    <link rel="stylesheet" href="{{asset("assets/css/select2.min.css")}}">
+    <link rel="stylesheet" href="{{asset("assets/css/select2-bootstrap-5-theme.min.css")}}">
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary mt-2 mb-2 shadow">
@@ -28,7 +31,7 @@
                 @endcan
                 @hasanyrole("teachers|admins")
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{request()->is('payment*') ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
+                    <a class="nav-link dropdown-toggle {{ ( request()->is('payment*') && !request()->is('payment')) ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
                         Správa plateb
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -108,11 +111,18 @@
         </ul>
     </footer>
 </div>
-
+<script src="{{asset("assets/js/jquery-3.6.3.min.js")}}"></script>
 <script src="{{asset("assets/js/bootstrap.bundle.min.js")}}"></script>
+<script src="{{asset("assets/js/select2.full.min.js")}}"></script>
+
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    $( "[data-select2-enable]" ).select2( {
+        theme: 'bootstrap-5'
+    } );
 </script>
+@yield("scripts")
 </body>
 </html>

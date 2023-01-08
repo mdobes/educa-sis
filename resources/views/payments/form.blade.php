@@ -9,7 +9,7 @@
      </div>
      <div class="mb-3">
          {!! Form::label("text", "Plátce", ["class" => "form-label"]) !!}
-         {!! Form::text("payer", $data->payer ?? null, ["placeholder" => "ales.medek", "class" => "form-control", "required" => true]) !!}
+         {!! Form::select("payer[]", [], null, ["id" => "payer", "data-placeholder" => "Aleš Medek nebo m2019", "class" => "form-control", "required" => true, "multiple" => true, "data-select2-enable" => true]) !!}
      </div>
      <div class="mb-3">
          {!! Form::label("text", "Splatnost", ["class" => "form-label"]) !!}

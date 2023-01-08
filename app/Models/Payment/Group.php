@@ -10,5 +10,5 @@ class Group extends Model
     use HasFactory;
 
     protected $table = 'payments_groups';
-    protected $fillable = ['author'];
+    protected $fillable = ['author', 'name'];
 }

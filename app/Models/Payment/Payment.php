@@ -14,7 +14,7 @@ class Payment extends Model
 
     protected $appends = ["remain"];
 
-    protected $fillable = ["payer", "author", "type", "title", "amount", "due", "specific_symbol"];
+    protected $fillable = ["payer", "author", "type", "title", "amount", "due", "specific_symbol", "group"];
 
     public function transactions(){
         return $this->hasMany(Transaction::class, "payment_id", "id");

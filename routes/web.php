@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\IndexController::class, "index"])->name("index");;
+Route::get('/', [\App\Http\Controllers\IndexController::class, "index"])->name("index");
 
 Route::get('/users', function () {
     $users = User::all();
@@ -31,6 +31,7 @@ Route::get('/giverole', [\App\Http\Controllers\IndexController::class, "giveStud
 
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
     Route::get("/payment", ["uses" => "index", "type" => null])->name("payment.my");
+    Route::get("/payment/searchpayers", "searchPayers")->name("payment.searchpayers");
     Route::get("/payment/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
     Route::get("/payment/created", ["uses" => "index", "type" => "created"])->name("payment.created");
     Route::get("/payment/create","create")->name("payment.create");

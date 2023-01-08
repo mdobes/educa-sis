@@ -21,14 +21,24 @@ class TransactionsController extends Controller
     public function store(TransactionRequest $request)
     {
 
-        //TODO: práva, opravit že lze platit do mínusu
-
         $data = $request->all();
         $data["author"] = Auth::user()->username;
 
-        Transaction::create($data);
+        $payment = Payment::find($data["payment_id"]);
+        $user = Auth::user();
+        $username = $user->username;
 
-        return redirect()->route("payment.detail", $data["payment_id"]);
+        if($payment->author == $username || $user->hasPermissionTo('payments.any.transaction')) {
+            if($data["amount"] <= $payment->remain){
+                Transaction::create($data);
+                return redirect()->route("payment.detail", $data["payment_id"]);
+            }else{
+                return abort(400);
+            }
+
+        }else{
+            return abort(403);
+        }
     }
 
     /**

@@ -45,7 +45,7 @@
                     <a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail platby" href="{{url("/payment/$payment->id")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>
                 @endif
 
-                @if($payment->author == $username || $user->hasPermissionTo('payments.edit'))
+                @if($payment->author == $username || $user->hasPermissionTo('payments.any.edit'))
                 <a data-bs-toggle="tooltip" data-bs-title="Editovat platbu" href="{{url("/payment/edit/$payment->id")}}" class="text-decoration-none"><i class="ti ti-edit"></i></a>
                 @endif
             </td>

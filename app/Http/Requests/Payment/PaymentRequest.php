@@ -27,7 +27,7 @@ class PaymentRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'amount' => 'required|int|min:1|max_digits::11',
-            'payer' => ['required', 'max:255', Rule::exists("users", "username")],
+            'payer' => 'required',
             'due' => 'required|date|after:today'
         ];
     }
