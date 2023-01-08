@@ -32,6 +32,7 @@ class PaymentController extends Controller
         $type = $request->route()->getAction()['type'];
         $showGrouping = false;
         $showPaid = false;
+        $showPayer = false;
         $user = Auth::user();
         $username = $user->username;
 
@@ -66,6 +67,7 @@ class PaymentController extends Controller
         }else if ($type == "created"){
             $title = "Mnou vytvořené platby";
             $showGrouping = true;
+            $showPayer = true;
 
             $data = DB::table('payments_list')
                 ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
@@ -77,6 +79,7 @@ class PaymentController extends Controller
         }else if ($type == "myPaid"){
             $title = "Mé uhrazené platby";
             $showPaid = true;
+            $showPayer = false;
 
             $data = DB::table('payments_list')
                 ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
@@ -87,7 +90,7 @@ class PaymentController extends Controller
                 ->where("payments_list.payer", "=", Auth::user()->username)
                 ->paginate(15);
         }
-        return view('payments.index', compact("data", "title", "showGrouping", "showPaid", "user", "username"));
+        return view('payments.index', compact("data", "title", "showGrouping", "showPaid", "user", "username", "showPayer"));
     }
 
     /**

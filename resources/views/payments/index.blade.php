@@ -27,6 +27,9 @@
         <thead>
         <tr>
             <th scope="col">Popis platby</th>
+            @if($showPayer)
+                <th scope="col">Plátce</th>
+            @endif
             <th scope="col">Částka</th>
             <th scope="col">Zbývá</th>
             <th scope="col">Splatnost</th>
@@ -37,6 +40,9 @@
     @forelse($data as $payment)
         <tr @if(\Carbon\Carbon::parse($payment->due) < \Carbon\Carbon::now() && $payment->remain > 0) class="bg-danger bg-opacity-75" @endif>
             <td>{{$payment->title}}</td>
+            @if($showPayer)
+                <td>{{\App\Models\User::where("username", "=", $payment->payer)->first()->name ?? "" }}</td>
+            @endif
             <td>{{$payment->amount}} Kč</td>
             <td>{{$payment->remain}} Kč</td>
             <td>{{\Carbon\Carbon::parse($payment->due)->format("d.m.Y")}}</td>
