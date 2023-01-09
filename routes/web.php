@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\IndexController::class, "index"])->name("index");
+Route::get('/', [\App\Http\Controllers\IndexController::class, "index"])->name("index")->middleware('auth');
 
 Route::get('/users', function () {
     $users = User::all();
@@ -29,20 +29,20 @@ Route::get('/groups', function () {
 
 Route::get('/giverole', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
 
-Route::controller(\App\Http\Controllers\Payment\GroupController::class)->group(function () {
-    Route::get("/payment/group", ["uses" => "index"])->name("payment.group");
+Route::controller(\App\Http\Controllers\Payment\GroupController::class)->prefix("payment")->group(function () {
+    Route::get("/group", ["uses" => "index"])->name("payment.group");
 })->middleware('auth');
 
-Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->group(function () {
-    Route::get("/payment", ["uses" => "index", "type" => null])->name("payment.my");
-    Route::get("/payment/group/{id}", ["uses" => "index", "type" => "group"])->name("payment.group.detail");
-    Route::get("/payment/searchpayers", "searchPayers")->name("payment.searchpayers");
-    Route::get("/payment/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
-    Route::get("/payment/created", ["uses" => "index", "type" => "created"])->name("payment.created");
-    Route::get("/payment/create","create")->name("payment.create");
-    Route::get("/payment/{id}", "show")->name("payment.detail");
-    Route::post("/payment","store")->name("payment.store");
-    Route::get("/payment/edit/{id}","edit")->name("payment.edit");
+Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefix("payment")->group(function () {
+    Route::get("/", ["uses" => "index", "type" => null])->name("payment.my");
+    Route::post("/","store")->name("payment.store");
+    Route::get("/group/{id}", ["uses" => "index", "type" => "group"])->name("payment.group.detail");
+    Route::get("/searchpayers", "searchPayers")->name("payment.searchpayers");
+    Route::get("/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
+    Route::get("/created", ["uses" => "index", "type" => "created"])->name("payment.created");
+    Route::get("/create","create")->name("payment.create");
+    Route::get("/edit/{id}","edit")->name("payment.edit");
+    Route::get("/{id}", "show")->name("payment.detail");
 })->middleware('auth');
 
 
