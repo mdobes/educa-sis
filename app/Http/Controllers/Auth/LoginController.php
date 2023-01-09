@@ -13,10 +13,11 @@ class LoginController extends Controller
 {
     use ListensForLdapBindFailure;
 
-    public function post(LoginRequest $request){
+    /**
+     * Vynucení příhlášení
+     */
 
-        //dd($request->all());
-        //dd(Auth::attempt($request->all()));
+    public function post(LoginRequest $request){
 
         $credentials = [
             'samaccountname' => $request->post("username"),
@@ -40,7 +41,8 @@ class LoginController extends Controller
     }
 
     public function get(){
-        return view("login");
+        if(Auth::user()) return redirect('/');
+        else return view("login");
     }
 
 }

@@ -14,6 +14,14 @@ use Spatie\Permission\Models\Permission;
 class IndexController extends Controller
 {
 
+    /**
+     * Vynucení příhlášení
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(){
         $name = new CzechName();
         $vocativ = $name->vocative( Str::before(Auth::user()->name, " "));

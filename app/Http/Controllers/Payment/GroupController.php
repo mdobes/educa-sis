@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
+
+    /**
+     * Vynucení příhlášení
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Ukáže seznam sekupin
      *

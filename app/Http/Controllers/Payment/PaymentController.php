@@ -18,6 +18,9 @@ use Spatie\Permission\Models\Permission;
 class PaymentController extends Controller
 {
 
+    /**
+     * Vynucení příhlášení
+     */
     public function __construct()
     {
         $this->middleware('auth');
