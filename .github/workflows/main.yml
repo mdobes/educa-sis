@@ -13,4 +13,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: sudo -S ${{ secrets.PASSWORD }} ./deploy.sh -S
+        script: echo ${{ secrets.PASSWORD }} | sudo -S -u ${{ secrets.USERNAME }} ./deploy.sh
