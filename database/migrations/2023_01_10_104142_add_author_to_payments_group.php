@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('payments_group', function (Blueprint $table) {
+        Schema::table('payments_groups', function (Blueprint $table) {
             $table->string("author");
         });
     }
