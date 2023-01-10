@@ -4,7 +4,7 @@ services:
     web-educasis:
         image: "mdobes/educa-sis:lastest"
         build:
-            context: ./files
+            context: .
             args:
                 BASE_TAG: latest
                 network: default
@@ -16,7 +16,7 @@ services:
             - APP_ENV=production
             - APP_DEBUG=false
         volumes:
-            - ./files/:/var/www/html/
+            - ./:/var/www/html/
         networks:
             - "default"
         #entrypoint: "php /var/www/html/artisan migrate --force"
