@@ -3,16 +3,24 @@ version: "3.7"
 services:
     web-educasis:
         image: "mdobes/educa-sis:lastest"
+        build:
+            context: ./files
+            args:
+                BASE_TAG: latest
+                network: default
         container_name: "web-educasis"
+        ports:
+            - 80:80
         restart: "always"
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.web-educasis-sec.entrypoints=websecure"
-            - "traefik.http.routers.web-educasis-sec.rule=Host(`educasis.dobes.pw`)"
-            - "traefik.http.routers.web-educasis-sec.tls.certresolver=cf-auto"
+        environment:
+            - APP_ENV=production
+            - APP_DEBUG=false
         volumes:
             - ./files/:/var/www/html/
+        networks:
+            - "default"
+        #entrypoint: "php /var/www/html/artisan migrate --force"
 networks:
     default:
-        external:
-            name: "webhosting"
+        external: true
+        name: "webhosting"
