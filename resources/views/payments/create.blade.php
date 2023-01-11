@@ -22,6 +22,8 @@
     <script>
         $('#payer').select2({
             theme: 'bootstrap-5',
+            language: "cs",
+            minimumInputLength: 3,
             ajax: {
                 url: "{{route("payment.searchpayers")}}",
                 data: function (params) {

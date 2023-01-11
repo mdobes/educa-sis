@@ -114,6 +114,7 @@
 <script src="{{asset("assets/js/jquery-3.6.3.min.js")}}"></script>
 <script src="{{asset("assets/js/bootstrap.bundle.min.js")}}"></script>
 <script src="{{asset("assets/js/select2.full.min.js")}}"></script>
+<script src="{{asset("assets/js/i18n/cs.js")}}"></script>
 
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
