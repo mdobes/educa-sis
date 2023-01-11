@@ -30,7 +30,7 @@ class IndexController extends Controller
 
 
     public function giveStudentRole(){
-        Permission::create(["name" => "payments.*"]);
+        Permission::findOrCreate("payments.*");
         $users = Auth::user()->givePermissionTo('payments.*');
     }
 }
