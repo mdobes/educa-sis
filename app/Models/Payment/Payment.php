@@ -12,7 +12,7 @@ class Payment extends Model
 
     protected $table = 'payments_list';
 
-    protected $appends = ["remain"];
+    protected $appends = ["remain", "paid", "remainFormatted", "paidFormatted", "authorFormatted", "payerFormatted", "amountFormatted", "dueFormatted"];
 
     protected $fillable = ["payer", "author", "type", "title", "amount", "due", "specific_symbol", "group"];
 
@@ -24,6 +24,10 @@ class Payment extends Model
         return $this->amount - $this->hasMany(Transaction::class, "payment_id", "id")->sum("amount");
     }
 
+    public function getRemainFormattedAttribute(){
+        return $this->amount - $this->hasMany(Transaction::class, "payment_id", "id")->sum("amount") . " Kč";
+    }
+
     public function getGroupAttribute(){
         return $this->belongsTo(Group::class, "id", "group");
     }
@@ -32,11 +36,23 @@ class Payment extends Model
         return $this->hasMany(Transaction::class, "payment_id", "id")->sum("amount");
     }
 
-    public function authorUser(){
-        return $this->belongsTo(User::class, "author", "username");
+    public function getAmountFormattedAttribute(){
+        return $this->amount . " Kč";
     }
 
-    public function payerUser(){
-        return $this->belongsTo(User::class, "payer", "username");
+    public function getDueFormattedAttribute(){
+        return \Carbon\Carbon::parse($this->due)->format("d. m. Y");
+    }
+
+    public function getPaidFormattedAttribute(){
+        return $this->hasMany(Transaction::class, "payment_id", "id")->sum("amount");
+    }
+
+    public function getAuthorFormattedAttribute(){
+        return $this->belongsTo(User::class, "author", "username")->value("name");
+    }
+
+    public function getPayerFormattedAttribute(){
+        return $this->belongsTo(User::class, "payer", "username")->value("name");
     }
 }

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{asset("assets/css/tabler-icons.min.css")}}">
     <link rel="stylesheet" href="{{asset("assets/css/select2.min.css")}}">
     <link rel="stylesheet" href="{{asset("assets/css/select2-bootstrap-5-theme.min.css")}}">
-
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary mt-2 mb-2 shadow">
@@ -113,6 +113,8 @@
 </div>
 <script src="{{asset("assets/js/jquery-3.6.3.min.js")}}"></script>
 <script src="{{asset("assets/js/bootstrap.bundle.min.js")}}"></script>
+<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table-locale-all.min.js"></script>
 <script src="{{asset("assets/js/select2.full.min.js")}}"></script>
 <script src="{{asset("assets/js/i18n/cs.js")}}"></script>
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Ldap\User;
+use http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,7 @@ Route::controller(\App\Http\Controllers\Payment\GroupController::class)->prefix(
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefix("payment")->group(function () {
     Route::get("/", ["uses" => "index", "type" => null])->name("payment.my");
     Route::post("/","store")->name("payment.store");
+    Route::get("/search","search")->name("payment.search");
     Route::get("/group/{id}", ["uses" => "index", "type" => "group"])->name("payment.group.detail");
     Route::get("/searchpayers", "searchPayers")->name("payment.searchpayers");
     Route::get("/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");

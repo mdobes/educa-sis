@@ -29,6 +29,21 @@ class PaymentController extends Controller
     /**
      * Ukazuje seznamy plateb
      *
+     * @return array
+     */
+    public function search(Request $request){
+        $offset = ($request->get("offset") ?? 0);
+        $limit = ($request->get("limit") ?? 10);
+        $rows = Payment::where("title", "like", "%" . $request->get("search") . "%")->skip($offset)->take($limit)->get();
+        $totalNotFiltered = count($rows);
+        $total =  Payment::count();
+
+        return compact("total", "totalNotFiltered", "rows");
+    }
+
+    /**
+     * Ukazuje seznamy plateb
+     *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index(Request $request, ? String $id = null)

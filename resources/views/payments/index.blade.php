@@ -22,49 +22,41 @@
 @endsection
 
 @section("content")
-    <table class="table">
+    <table class="table" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true"  data-side-pagination="server"  data-pagination="true">
         <thead>
         <tr>
-            <th scope="col">Popis platby</th>
+            <th scope="col" data-field="title">Popis platby</th>
             @if($showPayer)
-                <th scope="col">Plátce</th>
+                <th scope="col" data-field="payerFormatted">Plátce</th>
             @endif
-            <th scope="col">Částka</th>
-            <th scope="col">Zbývá</th>
-            <th scope="col">Splatnost</th>
-            <th scope="col">Akce</th>
+            <th scope="col" data-field="amountFormatted">Částka</th>
+            <th scope="col" data-field="remainFormatted">Zbývá</th>
+            <th scope="col" data-field="dueFormatted">Splatnost</th>
+            <th scope="col" data-formatter="operateFormatter">Akce</th>
         </tr>
         </thead>
         <tbody>
-    @forelse($data as $payment)
-        <tr @if(\Carbon\Carbon::parse($payment->due) < \Carbon\Carbon::now() && $payment->remain > 0) class="bg-danger bg-opacity-75" @endif>
-            <td>{{$payment->title}}</td>
-            @if($showPayer)
-                <td>{{\App\Models\User::where("username", "=", $payment->payer)->first()->name ?? "" }}</td>
-            @endif
-            <td>{{$payment->amount}} Kč</td>
-            <td>{{$payment->remain}} Kč</td>
-            <td>{{\Carbon\Carbon::parse($payment->due)->format("d.m.Y")}}</td>
-            <td>
-                @if($payment->author == $username || $payment->payer == $username || $user->hasPermissionTo('payments.view'))
-                    <a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail platby" href="{{url("/payment/$payment->id")}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>
-                @endif
-
-                @if($payment->author == $username || $user->hasPermissionTo('payments.any.edit'))
-                <a data-bs-toggle="tooltip" data-bs-title="Editovat platbu" href="{{url("/payment/edit/$payment->id")}}" class="text-decoration-none"><i class="ti ti-edit"></i></a>
-                @endif
-            </td>
-
-        </tr>
-        @empty
-        <tr>
-            <td colspan="6">Žádné platby nebyly nalezeny.</td>
-        </tr>
-    @endforelse
         </tbody>
     </table>
 
     {{ $data->links() }}
 
 
+@endsection
+@section("scripts")
+    <script>
+        function ajaxRequest(params) {
+            let url = "{{url()->route("payment.search")}}";
+            $.get(url + '?' + $.param(params.data)).then(function (res) {
+                params.success(res)
+            })
+        }
+
+        function operateFormatter(value, row, index) {
+            return [
+                `<a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail platby" href="/payment/${row.id}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>`,
+                `<a data-bs-toggle="tooltip" data-bs-title="Editovat platbu" href="/payment/edit/${row.id}" class="text-decoration-none"><i class="ti ti-edit"></i></a>`
+            ].join('')
+        }
+    </script>
 @endsection
