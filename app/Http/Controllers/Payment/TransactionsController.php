@@ -41,7 +41,7 @@ class TransactionsController extends Controller
                 Transaction::create($data);
                 return redirect()->route("payment.detail", $data["payment_id"]);
             }else{
-                return abort(400);
+                return redirect()->back()->withErrors(['bad_value' => 'Hodnota musí být stejná nebo menší než hodnota uhradit']);
             }
 
         }else{
