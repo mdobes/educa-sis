@@ -68,6 +68,12 @@
             {!! Form::label("password", "Heslo") !!}
         </div>
 
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="true" name="remember"> Zapamatovat si přihlášení
+            </label>
+        </div>
+
         <button class="w-100 btn btn-lg btn-primary" type="submit">Přihlásit se</button>
     <div class="mt-5">
         <span class="mb-3 mb-md-0 text-muted"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none"> <img src="{{asset("assets/images/dobes.svg")}}" alt="Michal Dobeš favicon" height="24"> © 2022 Michal Dobeš</a></span>

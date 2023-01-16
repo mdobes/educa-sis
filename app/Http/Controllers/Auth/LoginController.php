@@ -24,12 +24,9 @@ class LoginController extends Controller
             'password' => $request->post("password"),
         ];
 
-        $data = [
-            'username' => $request->post("username"),
-            'password' => $request->post("password"),
-        ];
+        $remember = $request->post("remember");
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
 
             $message = "Úspěšně přihlášen.";

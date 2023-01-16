@@ -38,13 +38,13 @@
                     <img class="img-fluid" src="https://api.paylibo.com/paylibo/generator/czech/image?compress=false&size=440&accountNumber=2342343432&bankCode=0100&amount=43298&currency=CZK" alt="">
                 </div>
                 <div class="col-12 col-md-7">
-                    <b>Variabilní symbol:</b> {{$data->payerUser->id}}<br>
+                    <b>Variabilní symbol:</b> {{$data->payerUserId}}<br>
                     <b>Specifický symbol</b> {{ $data->specific_symbol }}<br/>
                     <b>Částka:</b> {{$data->amount}} Kč<br>
                     <hr>
                     <b>Splatnost:</b> {{\Carbon\Carbon::parse($data->due)->format("d.m.Y")}}<br>
                     <b>Popis platby:</b> {{$data->title}}<br>
-                    <b>Zadal:</b> {{$data->authorUser->name}}
+                    <b>Zadal:</b> {{$data->authorFormatted}}
                 </div>
             </div>
         </div>

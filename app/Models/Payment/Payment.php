@@ -55,4 +55,8 @@ class Payment extends Model
     public function getPayerFormattedAttribute(){
         return $this->belongsTo(User::class, "payer", "username")->value("name");
     }
+
+    public function getPayerUserIdAttribute(){
+        return $this->belongsTo(User::class, "payer", "username")->value("id");
+    }
 }
