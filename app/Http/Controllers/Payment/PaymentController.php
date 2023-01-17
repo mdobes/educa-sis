@@ -34,9 +34,10 @@ class PaymentController extends Controller
     public function search(Request $request){
         $offset = ($request->get("offset") ?? 0);
         $limit = ($request->get("limit") ?? 10);
-        $rows = Payment::where("title", "like", "%" . $request->get("search") . "%")->skip($offset)->take($limit)->get();
+        //$rows = Group::all();
+        $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->skip($offset)->take($limit)->get();
         $totalNotFiltered = count($rows);
-        $total =  Payment::count();
+        $total =  Group::count();
 
         return compact("total", "totalNotFiltered", "rows");
     }
@@ -160,6 +161,11 @@ class PaymentController extends Controller
 
         if($user->hasPermissionTo('payments.create')) {
 
+            $group = Group::create([
+                "name" => $request->post("title"),
+                "author" => $username
+            ]);
+
             foreach($request->post("payer") as $list){
                 $info = explode(":", $list);
                 if ($info[0] == "user"){
@@ -172,15 +178,12 @@ class PaymentController extends Controller
                     $data["specific_symbol"] = $payment["specific_symbol"] + 1;
                     $data["type"] = "normal";
                     $data["author"] = $username;
+                    $data["group"] = $group["id"];
 
                     $payment = Payment::create($data);
                     $route = "payment.created";
                 }else if($info[0] == "group"){
                     $userGroup = UserGroup::where("id", "=", $info[1])->firstOrFail();
-                    $group = Group::create([
-                            "name" => $request->post("title"),
-                            "author" => $username
-                    ]);
                     foreach(explode(",", $userGroup->users) as $u) {
                         $payment = Payment::where("payer", "=", $u)->latest()->firstOr(function () {
                             return ["specific_symbol" => 0];
