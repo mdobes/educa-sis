@@ -18,8 +18,6 @@ docker-php-ext-install ldap
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
-ADD worker.supervisor /etc/supervisor/conf.d
-CMD ["/usr/bin/supervisord"]
 
 RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
