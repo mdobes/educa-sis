@@ -8,7 +8,8 @@ RUN apt-get update \
     curl \
     libzip-dev \
     zip \
-    cron
+    cron \
+    nano
 
 RUN \
 apt-get install libldap2-dev -y && \
