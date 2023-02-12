@@ -233,7 +233,6 @@ class PaymentController extends Controller
             $qrPlatba = new QRPlatba();
 
             $qrPlatba->setAccount(env("BANK_ACC_NUMBER"))
-            ->setIBAN(env("BANK_ACC_IBAN"))
             ->setVariableSymbol($data->payerUserId)
                 ->setSpecificSymbol($data->specific_symbol)
                 ->setAmount($data->remain)
