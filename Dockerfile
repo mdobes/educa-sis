@@ -29,7 +29,8 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 WORKDIR /var/www/html/
-RUN crontab -l | { cat; echo "* * * * * php /var/www/html/artisan schedule:run 1>> /dev/null 2>&1"; } | crontab -
-CMD ["cron", "-f"]
+
+RUN echo "* * * * * php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" >> /etc/crontab
+RUN touch /var/log/cron.log
 
 EXPOSE 8050
