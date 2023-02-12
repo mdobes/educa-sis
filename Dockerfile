@@ -8,7 +8,7 @@ RUN apt-get update \
     curl \
     libzip-dev \
     zip \
-    cron
+    supervisor
 
 RUN \
 apt-get install libldap2-dev -y && \
@@ -18,11 +18,8 @@ docker-php-ext-install ldap
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
-COPY cron /etc/cron.d/cron
-RUN chmod 0644 /etc/cron.d/cron
-RUN crontab /etc/cron.d/cron
-RUN ln -s /dev/stdout /var/log/cron
-RUN sed -i 's/^exec /service cron start\n\nexec /' /usr/local/bin/apache2-foreground
+ADD worker.supervisor /etc/supervisor/conf.d
+CMD ["/usr/bin/supervisord"]
 
 RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
