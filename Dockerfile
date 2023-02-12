@@ -18,10 +18,8 @@ docker-php-ext-install ldap
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
-ADD crontab.txt /etc/cron.d/crontab.txt
-RUN crontab /etc/cron.d/crontab.txt
-CMD ["cron", "-f"]
-
+RUN echo "* * * * * php /var/www/artisan schedule:run >> /var/html/www/cron.log 2>&1" >> /etc/crontab
+RUN touch /var/www/html/cron.log
 
 RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
