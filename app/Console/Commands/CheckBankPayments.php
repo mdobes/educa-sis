@@ -45,13 +45,13 @@ class CheckBankPayments extends Command
                     'Authorization' => 'Bearer ' . env('BANK_TOKEN')
                 ],
                 'json' => ["accountId" => env('BANK_ACC_ID'), "filter" => [
-                    "from" => Cache::get('bankCheckedLast') ?? Carbon::now()->format("D.m.Y")],
+                    "from" => Cache::get('bankCheckedLast') ?? Carbon::now()->format("d.m.Y")],
                     "pageItemCount" => 100000, "pageIndex" => 0]
             ]);
 
             $json = json_decode($response->getBody());
 
-            Cache::put('bankCheckedLast', Carbon::now()->format("D.m.Y"));
+            Cache::put('bankCheckedLast', Carbon::now()->format("d.m.Y"));
 
             foreach($json->transactions as $payment){
                 if(!BankPaymentsLog::where("transaction_id", $payment->transactionId)->first()) {
