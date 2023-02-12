@@ -45,22 +45,24 @@ class CheckBankPayments extends Command
                     'Authorization' => 'Bearer ' . env('BANK_TOKEN')
                 ],
                 'json' => ["accountId" => env('BANK_ACC_ID'), "filter" => [
-                    "from" => Cache::get('bankCheckedLast') ?? Carbon::now()->format("d.m.Y")],
+                    "dateFrom" => Cache::get('bankCheckedLast') ?? Carbon::now()->format("Y-m-d")],
                     "pageItemCount" => 100000, "pageIndex" => 0]
             ]);
 
             $json = json_decode($response->getBody());
 
-            Cache::put('bankCheckedLast', Carbon::now()->format("d.m.Y"));
+            Cache::put('bankCheckedLast', Carbon::now()->format("Y-m-d"));
 
             foreach($json->transactions as $payment){
                 if(!BankPaymentsLog::where("transaction_id", $payment->transactionId)->first()) {
 
-                    $userId = User::select("username")->where("id", $payment->variableSymbol)->first()->username;
-                    $paymentId = Payment::select("id")->where("payer", $userId)->where("specific_symbol", $payment->specificSymbol)->first();
+                    $userId = User::select("username")->where("id", $payment->variableSymbol)->first()->username ?? null;
+                    if ($userId) {
+                        $paymentId = Payment::select("id")->where("payer", $userId)->where("specific_symbol", $payment->specificSymbol)->first();
 
-                    if ($paymentId) {
-                        Transaction::create(["payment_id" => $paymentId->id, "amount" => $payment->amount->value, "author" => "System", "type" => "bank_transfer"]);
+                        if ($paymentId) {
+                            Transaction::create(["payment_id" => $paymentId->id, "amount" => $payment->amount->value, "author" => "System", "type" => "bank_transfer"]);
+                        }
                     }
 
                     BankPaymentsLog::create([
