@@ -19,9 +19,10 @@ docker-php-ext-install ldap
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
 COPY cron /etc/cron.d/cron
-RUN chmod 0644 /etc/cron.d/cron \
+RUN chmod 0644 /etc/cron.d/cron
 RUN crontab /etc/cron.d/cron
-RUN mkdir -p /var/log/cron
+RUN ln -s /dev/stdout /var/log/cron
+CMD [ "crond", "-l", "2", "-f" ]
 
 
 RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
