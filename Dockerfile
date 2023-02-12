@@ -22,7 +22,7 @@ COPY cron /etc/cron.d/cron
 RUN chmod 0644 /etc/cron.d/cron
 RUN crontab /etc/cron.d/cron
 RUN ln -s /dev/stdout /var/log/cron
-CMD ["crontab -"]
+RUN sed -i 's/^exec /service cron start\n\nexec /' /usr/local/bin/apache2-foreground
 
 RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
