@@ -31,6 +31,6 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 WORKDIR /var/www/html/
 
 RUN echo "* * * * * php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" >> /etc/crontab
-RUN touch /var/log/cron.log
+RUN touch /var/www/html/cron.log
 
 EXPOSE 8050
