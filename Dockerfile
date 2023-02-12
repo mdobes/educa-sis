@@ -30,6 +30,6 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html/
 RUN crontab -l | { cat; echo "* * * * * php /var/www/html/artisan schedule:run 1>> /dev/null 2>&1"; } | crontab -
-
+CMD cron
 
 EXPOSE 8050
