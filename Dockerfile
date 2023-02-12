@@ -18,6 +18,9 @@ docker-php-ext-install ldap
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
+RUN echo "* * * * * php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" >> /etc/crontab
+RUN touch /var/www/html/cron.log
+
 RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php --install-dir=/usr/bin --filename=composer && \
     php -r "unlink('composer-setup.php');"
@@ -29,8 +32,5 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 WORKDIR /var/www/html/
-
-RUN echo "* * * * * php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" >> /etc/crontab
-RUN touch /var/www/html/cron.log
 
 EXPOSE 8050
