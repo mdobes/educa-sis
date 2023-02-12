@@ -15,6 +15,10 @@ return [
 
     'default' => env('LDAP_CONNECTION', 'default'),
 
+    'options' => [
+        LDAP_OPT_X_TLS_REQUIRE_CERT => LDAP_OPT_X_TLS_NEVER
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | LDAP Connections

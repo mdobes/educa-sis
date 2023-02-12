@@ -24,11 +24,6 @@
                 <li class="nav-item">
                     <a class="nav-link {{request()->is('/') ? 'active' : ''}}" href="{{route("index")}}">Domů</a>
                 </li>
-                @can("payments.view.my")
-                <li class="nav-item">
-                    <a class="nav-link {{request()->is('payment') ? 'active' : ''}}" href="{{route("payment.my")}}">Platby</a>
-                </li>
-                @endcan
                 @hasanyrole("teachers|admins")
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ ( request()->is('payment*') && !request()->is('payment')) ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">

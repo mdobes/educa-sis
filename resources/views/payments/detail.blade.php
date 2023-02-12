@@ -35,7 +35,7 @@
             <h2>Detail platby</h2>
             <div class="row">
                 <div class="col-12 col-md-4">
-                    <img class="img-fluid" src="https://api.paylibo.com/paylibo/generator/czech/image?compress=false&size=440&accountNumber=2342343432&bankCode=0100&amount=43298&currency=CZK" alt="">
+                    <img class="img-fluid" src="{{$img}}">
                 </div>
                 <div class="col-12 col-md-7">
                     <b>Variabilní symbol:</b> {{$data->payerUserId}}<br>

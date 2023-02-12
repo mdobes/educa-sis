@@ -3,9 +3,6 @@
 @section("title", $title)
 
 @section("actions")
-    @if($showGrouping)
-        @include("payments.includes.actions")
-    @endif
     @if($showPaid)
         <div class="btn-group" role="group">
             <a href="{{ route("payment.my") }}" class="btn {{request()->is("payment") ? 'btn-primary' : 'btn-outline-primary'}}">Neuhrazené</a>
@@ -54,8 +51,7 @@
 
         function operateFormatter(value, row, index) {
             return [
-                `<a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail platby" href="/payment/${row.id}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>`,
-                `<a data-bs-toggle="tooltip" data-bs-title="Editovat platbu" href="/payment/edit/${row.id}" class="text-decoration-none"><i class="ti ti-edit"></i></a>`
+                `<a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail skupiny" href="/payment/group/${row.id}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>`,
             ].join('')
         }
     </script>

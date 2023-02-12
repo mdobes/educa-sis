@@ -38,7 +38,7 @@ Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefi
     Route::get("/", ["uses" => "index", "type" => null])->name("payment.my");
     Route::post("/","store")->name("payment.store");
     Route::get("/search","search")->name("payment.search");
-    Route::get("/group/{id}", ["uses" => "index", "type" => "group"])->name("payment.group.detail");
+    Route::get("/group/{group}", "showGroup")->name("payment.group.detail");
     Route::get("/searchpayers", "searchPayers")->name("payment.searchpayers");
     Route::get("/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
     Route::get("/created", ["uses" => "index", "type" => "created"])->name("payment.created");

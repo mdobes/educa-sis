@@ -16,7 +16,7 @@ class Group extends Model
     protected $appends = ["remain", "paid", "amount", "due", "authorFormatted", "dueFormatted", "remainFormatted", "paidFormatted", "amountFormatted"];
 
     public function payments(){
-        return $this->hasMany(Payment::class, "id", "group");
+        return $this->hasMany(Payment::class, "group", "id");
     }
 
     public function getRemainAttribute(){

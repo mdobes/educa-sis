@@ -8,7 +8,9 @@ use App\Models\Payment\Group;
 use App\Models\Payment\Payment;
 use App\Models\User;
 use App\Models\UserGroup;
+use Defr\QRPlatba\QRPlatba;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Type\Integer;
@@ -34,12 +36,16 @@ class PaymentController extends Controller
     public function search(Request $request){
         $offset = ($request->get("offset") ?? 0);
         $limit = ($request->get("limit") ?? 10);
-        //$rows = Group::all();
         $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->skip($offset)->take($limit)->get();
         $totalNotFiltered = count($rows);
         $total =  Group::count();
 
         return compact("total", "totalNotFiltered", "rows");
+    }
+
+    public function showGroup(Group $group){
+        //if (Auth::user()->username == $group->author) return null;
+        return view("payments.group", compact("group"));
     }
 
     /**
@@ -224,7 +230,19 @@ class PaymentController extends Controller
         $username = $user->username;
 
         if($data->author == $username || $data->payer == $username || $user->hasPermissionTo('payments.any.view')){
-            return view('payments.detail', compact("data", "user", "username"));
+            $qrPlatba = new QRPlatba();
+
+            $qrPlatba->setAccount(env("BANK_ACC_NUMBER"))
+            ->setIBAN(env("BANK_ACC_IBAN"))
+            ->setVariableSymbol($data->payerUserId)
+                ->setSpecificSymbol($data->specific_symbol)
+                ->setAmount($data->remain)
+                ->setCurrency('CZK')
+                ->setDueDate(Carbon::parse($data->due));
+
+            $img = $qrPlatba->getDataUri();
+
+            return view('payments.detail', compact("data", "user", "username", "img"));
         }else{
             return abort(403);
         }

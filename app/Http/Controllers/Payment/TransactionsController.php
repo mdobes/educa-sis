@@ -31,6 +31,7 @@ class TransactionsController extends Controller
 
         $data = $request->all();
         $data["author"] = Auth::user()->username;
+        $data["type"] = "cash";
 
         $payment = Payment::find($data["payment_id"]);
         $user = Auth::user();
