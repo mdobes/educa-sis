@@ -34,6 +34,10 @@ Route::controller(\App\Http\Controllers\Payment\GroupController::class)->prefix(
     Route::get("/group", ["uses" => "index"])->name("payment.group");
 })->middleware('auth');
 
+Route::get("/payment/banklog", [\App\Http\Controllers\Payment\BankPaymentsLogController::class, "index"])->name("payment.banklog");
+Route::get("/payment/banklog/search", [\App\Http\Controllers\Payment\BankPaymentsLogController::class, "search"])->name("payment.banklog.search");
+
+
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefix("payment")->group(function () {
     Route::get("/", ["uses" => "index", "type" => null])->name("payment.my");
     Route::post("/","store")->name("payment.store");

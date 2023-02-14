@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendTransactionCreatedJob;
 use App\Models\Payment\BankPaymentsLog;
 use App\Models\Payment\Payment;
 use App\Models\Payment\Transaction;
@@ -10,7 +11,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class CheckBankPayments extends Command
 {
@@ -36,15 +39,15 @@ class CheckBankPayments extends Command
      */
     public function handle()
     {
-        if (env("BANK_PROVIDER") == "Creditas" && env("BANK_ACC_ID") && env("BANK_TOKEN")) {
-            $client = new Client();
 
+        if (config("bank.bank.provider") == "Creditas" && config("bank.bank.acc_id") && config("bank.bank.token")) {
+            $client = new Client();
             $response = $client->post("https://api.creditas.cz/oam/v1/account/transaction/search", [
                 'headers' => [
                     'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . env('BANK_TOKEN')
+                    'Authorization' => 'Bearer ' .config("bank.bank.token")
                 ],
-                'json' => ["accountId" => env('BANK_ACC_ID'), "filter" => [
+                'json' => ["accountId" => config("bank.bank.acc_id"), "filter" => [
                     "dateFrom" => Cache::get('bankCheckedLast') ?? Carbon::now()->format("Y-m-d")],
                     "pageItemCount" => 100000, "pageIndex" => 0]
             ]);
@@ -56,12 +59,18 @@ class CheckBankPayments extends Command
             foreach($json->transactions as $payment){
                 if(!BankPaymentsLog::where("transaction_id", $payment->transactionId)->first()) {
 
-                    $userId = User::select("username")->where("id", $payment->variableSymbol)->first()->username ?? null;
+                    $userId = User::select("username")->where("id", $payment->variableSymbol ?? null)->first()->username ?? null;
                     if ($userId) {
                         $paymentId = Payment::select("id")->where("payer", $userId)->where("specific_symbol", $payment->specificSymbol)->first();
 
                         if ($paymentId) {
-                            Transaction::create(["payment_id" => $paymentId->id, "amount" => $payment->amount->value, "author" => "System", "type" => "bank_transfer"]);
+                            $transaction = Transaction::create(["payment_id" => $paymentId->id, "amount" => $payment->amount->value, "author" => "System", "type" => "bank_transfer"]);
+
+                            $details['authorName'] = "System";
+                            $details['paymentId'] = $transaction["payment_id"];
+                            $details["username"] = "System";
+                            $details["transactionId"] = $transaction;
+                            dispatch(new SendTransactionCreatedJob($details));
                         }
                     }
 
@@ -71,8 +80,8 @@ class CheckBankPayments extends Command
                         "payer_account_name" => $payment->partnerAccount->partnerName,
                         "amount" => $payment->amount->value,
                         "currency" => $payment->amount->currency,
-                        "specific_symbol" => $payment->specificSymbol,
-                        "variable_symbol" => $payment->variableSymbol
+                        "specific_symbol" => $payment->specificSymbol ?? "",
+                        "variable_symbol" => $payment->variableSymbol ?? ""
                     ]);
 
                 }

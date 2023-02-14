@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PaymentRequest;
+use App\Jobs\SendPaymentCreatedJob;
+use App\Mail\PaymentCreatedMail;
 use App\Models\Payment\Group;
 use App\Models\Payment\Payment;
 use App\Models\User;
@@ -13,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Ramsey\Uuid\Type\Integer;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -36,7 +39,7 @@ class PaymentController extends Controller
     public function search(Request $request){
         $offset = ($request->get("offset") ?? 0);
         $limit = ($request->get("limit") ?? 10);
-        $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->skip($offset)->take($limit)->get();
+        $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->orderBy("created_at", "desc")->skip($offset)->take($limit)->get();
         $totalNotFiltered = count($rows);
         $total =  Group::count();
 
@@ -172,6 +175,8 @@ class PaymentController extends Controller
                 "author" => $username
             ]);
 
+            $authorName = Auth::user()->name;
+
             foreach($request->post("payer") as $list){
                 $info = explode(":", $list);
                 if ($info[0] == "user"){
@@ -187,6 +192,12 @@ class PaymentController extends Controller
                     $data["group"] = $group["id"];
 
                     $payment = Payment::create($data);
+
+                    $details['authorName'] = Auth::user()->name;
+                    $details['paymentId'] = $payment;
+                    $details["username"] = $info[1];
+                    dispatch(new SendPaymentCreatedJob($details));
+
                     $route = "payment.created";
                 }else if($info[0] == "group"){
                     $userGroup = UserGroup::where("id", "=", $info[1])->firstOrFail();
@@ -203,6 +214,11 @@ class PaymentController extends Controller
                         $data["group"] = $group["id"];
 
                         $payment = Payment::create($data);
+
+                        $details['authorName'] = Auth::user()->name;
+                        $details['paymentId'] = $payment;
+                        $details["username"] = $u;
+                        dispatch(new SendPaymentCreatedJob($details));
                     }
                 }
 
@@ -232,12 +248,11 @@ class PaymentController extends Controller
         if($data->author == $username || $data->payer == $username || $user->hasPermissionTo('payments.any.view')){
             $qrPlatba = new QRPlatba();
 
-            $qrPlatba->setAccount(env("BANK_ACC_NUMBER"))
+            $qrPlatba->setAccount(config("bank.bank.acc_number"))
             ->setVariableSymbol($data->payerUserId)
                 ->setSpecificSymbol($data->specific_symbol)
                 ->setAmount($data->remain)
-                ->setCurrency('CZK')
-                ->setDueDate(Carbon::parse($data->due));
+                ->setCurrency('CZK');
 
             $img = $qrPlatba->getDataUri();
 

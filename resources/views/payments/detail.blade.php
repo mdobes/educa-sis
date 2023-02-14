@@ -55,12 +55,14 @@
                 <tr>
                     <th scope="col">Částka</th>
                     <th scope="col">Autor</th>
+                    <th scope="col">Typ</th>
                     <th scope="col">Vytvořeno</th>
                 </tr>
                 </thead>
                 <tbody>
                 @forelse($data->transactions as $transaction)
                     <tr>
+                        <td>{{$transaction->amount}} Kč</td>
                         <td>{{$transaction->amount}} Kč</td>
                         <td>{{ ($transaction->author == "System") ? "System" : \App\Models\User::where("username", "=", $transaction->author)->first()->name }}</td>
                         <td>{{\Carbon\Carbon::parse($transaction->created_at)->format("d.m.Y")}}</td>

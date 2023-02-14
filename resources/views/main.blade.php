@@ -36,6 +36,9 @@
                         @can("payments.create")
                             <li><a class="dropdown-item" href="{{route("payment.create")}}">Vytvořit platbu</a></li>
                         @endcan
+                        @can("payments.view.banklog")
+                            <li><a class="dropdown-item" href="{{route("payment.banklog")}}">Výpis BÚ</a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endhasanyrole
