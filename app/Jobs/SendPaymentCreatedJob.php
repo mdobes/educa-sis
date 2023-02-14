@@ -41,7 +41,7 @@ class SendPaymentCreatedJob implements ShouldQueue
         $authorName = $this->details["authorName"];
         $data = Payment::where("id", $this->details["paymentId"]["id"])->first();
 
-        $user = User::select("id")->where("username", $this->details["username"])->first();
+        $user = User::select("id", "email")->where("username", $this->details["username"])->first();
         $userId = $user->id;
 
         $qrPlatba = new QRPlatba();

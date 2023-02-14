@@ -50,7 +50,7 @@ class SendTransactionCreatedJob implements ShouldQueue
             $ifRemain = false;
         }
 
-        $user = User::select("id")->where("username", $data->payer)->first();
+        $user = User::select(["id", "email"])->where("username", $data->payer)->first();
         $userId = $user->id;
 
         $qrPlatba = new QRPlatba();
