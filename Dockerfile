@@ -11,12 +11,10 @@ RUN apt-get update \
     supervisor
 
 RUN \
-apt-get install libldap2-dev -y && \
+apt-get install libldap2-dev libldap-common -y && \
 rm -rf /var/lib/apt/lists/* && \
 docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
 docker-php-ext-install ldap
-
-RUN apt-get install libldap-common -y
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
