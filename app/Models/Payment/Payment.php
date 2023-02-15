@@ -28,7 +28,7 @@ class Payment extends Model
         return $this->amount - $this->hasMany(Transaction::class, "payment_id", "id")->sum("amount") . " Kč";
     }
 
-    public function getGroupAttribute(){
+    public function getGroupDetailAttribute(){
         return $this->belongsTo(Group::class, "id", "group");
     }
 

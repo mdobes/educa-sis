@@ -30,19 +30,16 @@ Route::get('/groups', function () {
 
 Route::get('/giverole', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
 
-Route::controller(\App\Http\Controllers\Payment\GroupController::class)->prefix("payment")->group(function () {
-    Route::get("/group", ["uses" => "index"])->name("payment.group");
-})->middleware('auth');
-
 Route::get("/payment/banklog", [\App\Http\Controllers\Payment\BankPaymentsLogController::class, "index"])->name("payment.banklog");
 Route::get("/payment/banklog/search", [\App\Http\Controllers\Payment\BankPaymentsLogController::class, "search"])->name("payment.banklog.search");
 
-
 Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefix("payment")->group(function () {
-    Route::get("/", ["uses" => "index", "type" => null])->name("payment.my");
+    Route::get("/", ["uses" => "index", "type" => "my"])->name("payment.show");
+    Route::get("/my", ["uses" => "index", "type" => "my"])->name("payment.show.my");
+    Route::get("/all", ["uses" => "index", "type" => "all"])->name("payment.show.all");
     Route::post("/","store")->name("payment.store");
     Route::get("/search","search")->name("payment.search");
-    Route::get("/group/{group}", "showGroup")->name("payment.group.detail");
+    Route::get("/group/{group}", "showGroup")->name("payment.group");
     Route::get("/searchpayers", "searchPayers")->name("payment.searchpayers");
     Route::get("/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
     Route::get("/created", ["uses" => "index", "type" => "created"])->name("payment.created");

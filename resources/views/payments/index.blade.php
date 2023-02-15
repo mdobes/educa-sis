@@ -3,19 +3,16 @@
 @section("title", $title)
 
 @section("actions")
-    @if($showPaid)
+    @can("payments.showAll")
         <div class="btn-group" role="group">
-            <a href="{{ route("payment.my") }}" class="btn {{request()->is("payment") ? 'btn-primary' : 'btn-outline-primary'}}">Neuhrazené</a>
-            <a href="{{ route("payment.mypaid") }}" class="btn {{request()->is("payment/paid") ? 'btn-primary' : 'btn-outline-primary'}}">Uhrazené</a>
+            <a href="{{url()->route("payment.show")}}" class="btn {{(request()->is("payment") || request()->is("payment/my")) ? 'btn-primary' : 'btn-outline-primary'}}">Mnou vytvořené</a>
+            <a href="{{url()->route("payment.show.all")}}" class="btn {{request()->is("payment/all") ? 'btn-primary' : 'btn-outline-primary'}}">Všechny vytvořené</a>
         </div>
         <div class="d-block mb-2"></div>
-    @endif
+    @endcan
     @can("payments.create")
     <a href="{{route("payment.create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
     @endcan
-    @if($showBacklink)
-        <a href="{{ url()->previous() }}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
-    @endif
 @endsection
 
 @section("content")
@@ -36,14 +33,12 @@
         </tbody>
     </table>
 
-    {{ $data->links() }}
-
-
 @endsection
 @section("scripts")
     <script>
         function ajaxRequest(params) {
             let url = "{{url()->route("payment.search")}}";
+            params.data.showType = "{{$type}}";
             $.get(url + '?' + $.param(params.data)).then(function (res) {
                 params.success(res)
             })

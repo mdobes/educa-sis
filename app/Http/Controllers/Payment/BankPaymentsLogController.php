@@ -21,7 +21,13 @@ class BankPaymentsLogController extends Controller
     {
         $offset = ($request->get("offset") ?? 0);
         $limit = ($request->get("limit") ?? 10);
-        $rows = BankPaymentsLog::where("payer_account_number", "like", "%" . $request->get("search") . "%")->skip($offset)->take($limit)->get();
+        $rows = BankPaymentsLog::
+            where("payer_account_number", "like", "%" . $request->get("search") . "%")
+            ->orWhere("payer_account_name", "like", "%" . $request->get("search") . "%")
+            ->orderBy("created_at", "desc")
+            ->skip($offset)
+            ->take($limit)
+            ->get();
         $totalNotFiltered = count($rows);
         $total =  BankPaymentsLog::count();
 

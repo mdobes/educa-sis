@@ -3,7 +3,7 @@
 @section("title", "Informace o platbě")
 
 @section("actions")
-    <a href="{{url("/payment/")}}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
+    <a href="{{url()->route("payment.group", $data->group)}}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
 
     @if($data->remain !== 0 && $data->author == $username || $user->hasPermissionTo('payments.any.edit'))
     <a href="#" data-bs-toggle="modal" data-bs-target="#addTransaction"><i class="ti ti-cash"></i> Přidat úhradu</a>
@@ -38,6 +38,7 @@
                     <img class="img-fluid" src="{{$img}}">
                 </div>
                 <div class="col-12 col-md-7">
+                    <b>Číslo BÚ:</b> {{config("bank.bank.acc_number")}}<br>
                     <b>Variabilní symbol:</b> {{$data->payerUserId}}<br>
                     <b>Specifický symbol</b> {{ $data->specific_symbol }}<br/>
                     <b>Částka:</b> {{$data->amount}} Kč<br>
@@ -63,8 +64,8 @@
                 @forelse($data->transactions as $transaction)
                     <tr>
                         <td>{{$transaction->amount}} Kč</td>
-                        <td>{{$transaction->amount}} Kč</td>
                         <td>{{ ($transaction->author == "System") ? "System" : \App\Models\User::where("username", "=", $transaction->author)->first()->name }}</td>
+                        <td>{{ ($transaction->type == "cash") ? "Hotově" : "Bankovní převod" }} </td>
                         <td>{{\Carbon\Carbon::parse($transaction->created_at)->format("d.m.Y")}}</td>
                         <td></td>
                     </tr>

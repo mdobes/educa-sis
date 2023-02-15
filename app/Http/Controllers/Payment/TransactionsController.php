@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\TransactionRequest;
-use App\Jobs\SendPaymentCreatedJob;
 use App\Jobs\SendTransactionCreatedJob;
 use App\Models\Payment\Payment;
 use App\Models\Payment\Transaction;

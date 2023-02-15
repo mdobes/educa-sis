@@ -1,6 +1,6 @@
 @extends("main")
 
-@section("title", "Výpís z BÚ  " . env("BANK_ACC_NUMBER"))
+@section("title", "Výpis z BÚ  " . config("bank.bank.acc_number"))
 
 @section("content")
     <table class="table" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true"  data-side-pagination="server"  data-pagination="true">

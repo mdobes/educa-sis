@@ -47,7 +47,7 @@ class CheckBankPayments extends Command
                     'Accept' => 'application/json',
                     'Authorization' => 'Bearer ' .config("bank.bank.token")
                 ],
-                'json' => ["accountId" => config("bank.bank.acc_id"),
+                'json' =>  ["accountId" => config("bank.bank.acc_id"),
                     "filter" => [
                         "dateFrom" => Cache::get('bankCheckedLast') ?? Carbon::now()->format("Y-m-d"),
                         "type" => "CREDIT"

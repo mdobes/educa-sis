@@ -55,6 +55,11 @@ class User extends Authenticatable implements LdapAuthenticatable
         return 'domain';
     }
 
+    public function getDistinguishednNmeColumn()
+    {
+        return 'distinguishedname';
+    }
+
     public function getLdapGuidColumn()
     {
         return 'guid';

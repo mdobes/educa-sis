@@ -4,21 +4,16 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PaymentRequest;
+use App\Http\Requests\Payment\SearchPaymentRequest;
+use App\Http\Requests\Payment\ShowGroupRequest;
 use App\Jobs\SendPaymentCreatedJob;
-use App\Mail\PaymentCreatedMail;
 use App\Models\Payment\Group;
 use App\Models\Payment\Payment;
 use App\Models\User;
 use App\Models\UserGroup;
 use Defr\QRPlatba\QRPlatba;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Ramsey\Uuid\Type\Integer;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class PaymentController extends Controller
 {
@@ -36,18 +31,31 @@ class PaymentController extends Controller
      *
      * @return array
      */
-    public function search(Request $request){
+    public function search(SearchPaymentRequest $request){
+        $user = Auth::user();
         $offset = ($request->get("offset") ?? 0);
         $limit = ($request->get("limit") ?? 10);
-        $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->orderBy("created_at", "desc")->skip($offset)->take($limit)->get();
-        $totalNotFiltered = count($rows);
-        $total =  Group::count();
+        if($request->get("showType") == "my"){
+            $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->where("author", Auth::user()->username)->orderBy("created_at", "desc")->skip($offset)->take($limit)->get();
+            $totalNotFiltered = count($rows);
+            $total =  Group::where("author", Auth::user()->username)->count();
 
-        return compact("total", "totalNotFiltered", "rows");
+            return compact("total", "totalNotFiltered", "rows");
+        }else if($request->get("showType") == "all" && $user->can("payments.view.all")){
+
+            $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->orderBy("created_at", "desc")->skip($offset)->take($limit)->get();
+            $totalNotFiltered = count($rows);
+            $total =  Group::count();
+
+            return compact("total", "totalNotFiltered", "rows");
+        }
+
+        return abort(400);
     }
 
     public function showGroup(Group $group){
-        //if (Auth::user()->username == $group->author) return null;
+        $user = Auth::user();
+        if ($user->username !== $group->author && !$user->can("payments.view.all")) return abort(403);
         return view("payments.group", compact("group"));
     }
 
@@ -56,85 +64,18 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function index(Request $request, ? String $id = null)
+    public function index(Request $request)
     {
         $type = $request->route()->getAction()['type'];
-        $showGrouping = false;
-        $showPaid = false;
-        $showPayer = false;
-        $showBacklink = false;
         $user = Auth::user();
+        if ($type == "my"){
+            $title = "Mnou vytvořené platby";
+        }else if($type == "all"){
+            $title = "Všechny vytvořené platby";
+        }
         $username = $user->username;
 
-        $selectCols = [
-            'payments_list.id AS id',
-            'payments_list.title as title',
-            'payments_list.amount as amount',
-            'payments_list.author as author',
-            'payments_list.payer as payer',
-            'payments_list.due as due',
-            'payments_list.created_at as created_at',
-            DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), payments_list.amount) as `remain`'),
-            DB::raw('COALESCE(CAST(payments_list.amount - SUM(payments_transactions.amount) As int), 0) as paid')
-        ];
-
-        $groupByCols = [
-            'payments_list.id', 'payments_list.title', 'payments_list.amount', 'payments_list.due', 'payments_list.author', 'payments_list.payer', 'payments_list.created_at'
-        ];
-
-        if (!isset($type)) {
-            $title = "Mé platby";
-            $showPaid = true;
-
-            $data = DB::table('payments_list')
-                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
-                ->select($selectCols)
-                ->groupBy($groupByCols)
-                ->orderBy("due", "asc")
-                ->having("remain", "!=", 0)
-                ->where("payer", "=", Auth::user()->username)
-                ->paginate(15);
-        }else if ($type == "created"){
-            $title = "Mnou vytvořené platby";
-            $showGrouping = true;
-            $showPayer = true;
-
-            $data = DB::table('payments_list')
-                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
-                ->select($selectCols)
-                ->groupBy($groupByCols)
-                ->orderBy("payments_list.created_at", "asc")
-                ->where("payments_list.author", "=", Auth::user()->username)
-                ->paginate(15);
-        }else if ($type == "myPaid"){
-            $title = "Mé uhrazené platby";
-            $showPaid = true;
-            $showPayer = false;
-
-            $data = DB::table('payments_list')
-                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
-                ->select($selectCols)
-                ->groupBy($groupByCols)
-                ->orderBy("due", "asc")
-                ->having("remain", "=", 0)
-                ->where("payments_list.payer", "=", Auth::user()->username)
-                ->paginate(15);
-        }else if ($type == "group"){
-            $group = Group::where("id", "=", $id)->firstOrFail();
-            $title = "Detail skupiny plateb ID $group->id";
-            $showPayer = true;
-            $showGrouping = true;
-            $showBacklink = true;
-
-            $data = DB::table('payments_list')
-                ->leftJoin('payments_transactions', 'payments_list.id', '=', 'payments_transactions.payment_id')
-                ->select($selectCols)
-                ->groupBy($groupByCols)
-                ->orderBy("due", "asc")
-                ->where("payments_list.group", "=", $group->id)
-                ->paginate(15);
-        }
-        return view('payments.index', compact("data", "title", "showGrouping", "showPaid", "user", "username", "showPayer", "showBacklink"));
+        return view('payments.index', compact("title", "username", "type"));
     }
 
     /**

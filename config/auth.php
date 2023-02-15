@@ -71,6 +71,7 @@ return [
                     'name' => 'cn',
                     'username' => 'samaccountname',
                     'email' => 'userprincipalname',
+                    'distinguished_name' => 'distinguishedname'
                 ],
                 'sync_existing' => [
                     'username' => 'samaccountname',
