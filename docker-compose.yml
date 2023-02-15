@@ -13,10 +13,11 @@ services:
             - 80:80
         restart: "always"
         environment:
-            - APP_ENV=production
-            - APP_DEBUG=false
+            - APP_ENV=local
+            - APP_DEBUG=true
         volumes:
             - ./:/var/www/html/
+            - ./.docker/ldap.conf:/etc/ldap/ldap.conf
         networks:
             - "default"
         #entrypoint: "php /var/www/html/artisan migrate --force"

@@ -16,6 +16,8 @@ rm -rf /var/lib/apt/lists/* && \
 docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
 docker-php-ext-install ldap
 
+RUN apt-get upgrade -yqq libldap-common
+
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip ctype iconv
 
 
