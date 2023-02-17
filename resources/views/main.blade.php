@@ -26,12 +26,12 @@
                 </li>
                 @hasanyrole("teachers|admins")
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ ( request()->is('payment*') && !request()->is('payment')) ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
+                    <a class="nav-link dropdown-toggle {{ ( request()->is('payment*') || request()->is('payment')) ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
                         Správa plateb
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         @can("payments.view.created")
-                            <li><a class="dropdown-item" href="{{route("payment.created")}}">Mnou vytvořené platby</a></li>
+                            <li><a class="dropdown-item" href="{{route("payment.show")}}">Mnou vytvořené platby</a></li>
                         @endcan
                         @can("payments.create")
                             <li><a class="dropdown-item" href="{{route("payment.create")}}">Vytvořit platbu</a></li>
@@ -42,6 +42,9 @@
                     </ul>
                 </li>
                 @endhasanyrole
+                <li class="nav-item">
+                    <a class="nav-link {{(request()->is('user*') || request()->is('user')) ? 'active' : ''}}" href="{{route("users.index")}}">Správa uživatelů</a>
+                </li>
             </ul>
             <ul class="navbar-nav d-flex">
                 <li class="nav-item dropdown">

@@ -35,17 +35,17 @@ class IndexController extends Controller
         Role::findOrCreate("admins");
 
 
-/*        $user = (new User)->inside('OU=Students,OU=School,DC=eduka,DC=local');
+        $user = (new User)->inside('OU=Teachers,OU=School,DC=eduka,DC=local');
 
         $pwdtxt = "Education2022";
         $newPassword = '"' . $pwdtxt . '"';
 
         $newPass = iconv( 'UTF-8', 'UTF-16LE', $newPassword );
 
-        $user->cn = 'John Doe';
+        $user->cn = 'Aleš Medek';
         $user->unicodePwd = $newPass;
-        $user->samaccountname = 'jdoe';
-        $user->userPrincipalName = 'jdoe@eduka.local';
+        $user->samaccountname = 'ales.medek';
+        $user->userPrincipalName = 'ales.medek@eduka.local';
 
         $user->save();
 
@@ -57,7 +57,7 @@ class IndexController extends Controller
             $user->save();
         } catch (\LdapRecord\LdapRecordException $e) {
             dd($e);
-        }*/
+        }
 
         $users = Auth::user()->givePermissionTo('payments.*');
         $users = Auth::user()->assignRole('admins');

@@ -106,7 +106,7 @@ class PaymentController extends Controller
         $user = Auth::user();
         $username = $user->username;
 
-        $route = "payment.created";
+        $route = "payment.show.my";
         $routeRedirect = null;
 
         if($user->hasPermissionTo('payments.create')) {
@@ -139,7 +139,6 @@ class PaymentController extends Controller
                     $details["username"] = $info[1];
                     dispatch(new SendPaymentCreatedJob($details));
 
-                    $route = "payment.created";
                 }else if($info[0] == "group"){
                     $userGroup = UserGroup::where("id", "=", $info[1])->firstOrFail();
                     foreach(explode(",", $userGroup->users) as $u) {
@@ -165,8 +164,8 @@ class PaymentController extends Controller
 
             }
 
-            return redirect()->route($route, $routeRedirect);
 
+            return redirect()->route("payment.group", $group["id"]);
 
 
         }else{

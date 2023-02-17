@@ -6,7 +6,7 @@
     <a href="{{url()->route("payment.group", $data->group)}}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
 
     @if($data->remain !== 0 && $data->author == $username || $user->hasPermissionTo('payments.any.edit'))
-    <a href="#" data-bs-toggle="modal" data-bs-target="#addTransaction"><i class="ti ti-cash"></i> Přidat úhradu</a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addTransaction"><i class="ti ti-cash"></i> Přidat úhradu</a>
     @endif
 @endsection
 
@@ -15,17 +15,21 @@
     <div class="row mb-3">
         <div class="col-12">
             <h5 class="mb-0">
-            @if(\Carbon\Carbon::parse($data->due . "23:59") < \Carbon\Carbon::now() && $data->remain > 0)
-               <span class="badge bg-danger text-uppercase">Po datu splatnosti</span>
-            @endif
+                @if(\Carbon\Carbon::parse($data->due . "23:59") < \Carbon\Carbon::now() && $data->remain > 0)
+                    <span class="badge bg-danger text-uppercase">Po datu splatnosti</span>
+                @endif
 
-            @if($data->remain == 0)
-                <span class="badge bg-success text-uppercase">Uhrazeno</span>
-            @endif
+                @if($data->remain == 0)
+                    <span class="badge bg-success text-uppercase">Uhrazeno</span>
+                @endif
 
-            @if($data->remain > 0)
-                <span class="badge bg-secondary text-uppercase">Zbývá uhradit {{$data->remain}} Kč</span>
-            @endif
+                @if($data->remain > 0)
+                    <span class="badge bg-secondary text-uppercase">Zbývá uhradit {{$data->remain}} Kč</span>
+                @endif
+
+                @if($data->remain < 0)
+                    <span class="badge bg-warning text-uppercase">Přeplatek {{$data->remain}} Kč</span>
+                @endif
             </h5>
         </div>
     </div>
@@ -88,7 +92,7 @@
                 </div>
                 <div class="modal-body">
                     {!! Form::open(["url" => url("transaction"), "method" => "post", "id" => "login"]) !!}
-                        {!! Form::hidden("payment_id", $data->id) !!}
+                    {!! Form::hidden("payment_id", $data->id) !!}
                     <div class="mb-3">
                         {!! Form::label("text", "Částka", ["class" => "form-label"]) !!}
                         {!! Form::number("amount", $data->title ?? null, ["placeholder" => "200", "class" => "form-control", "required" => true]) !!}

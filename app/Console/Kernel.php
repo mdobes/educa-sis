@@ -10,6 +10,7 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         Commands\CheckBankPayments::class,
+        Commands\GetAzureBearerToken::class,
     ];
 
     /**
@@ -21,6 +22,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('command:checkbankpayments')->everyMinute();
+        $schedule->command('command:getazurebearertoken')->everyThirtyMinutes();
+        $schedule->command('ldap:import users')->daily();
     }
 
     /**

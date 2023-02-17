@@ -41,11 +41,12 @@ class CheckBankPayments extends Command
     {
 
         if (config("bank.bank.provider") == "Creditas" && config("bank.bank.acc_id") && config("bank.bank.token")) {
+
             $client = new Client();
             $response = $client->post("https://api.creditas.cz/oam/v1/account/transaction/search", [
                 'headers' => [
                     'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' .config("bank.bank.token")
+                    'Authorization' => 'Bearer ' . config("bank.bank.token")
                 ],
                 'json' =>  ["accountId" => config("bank.bank.acc_id"),
                     "filter" => [
@@ -58,35 +59,36 @@ class CheckBankPayments extends Command
             $json = json_decode($response->getBody());
 
             Cache::put('bankCheckedLast', Carbon::now()->format("Y-m-d"));
+            if ($json->itemCount > 0){
+                foreach($json->transactions as $payment){
+                    if(!BankPaymentsLog::where("transaction_id", $payment->transactionId)->first()) {
 
-            foreach($json->transactions as $payment){
-                if(!BankPaymentsLog::where("transaction_id", $payment->transactionId)->first()) {
+                        $userId = User::select("username")->where("id", $payment->variableSymbol ?? null)->first()->username ?? null;
+                        if ($userId) {
+                            $paymentId = Payment::select("id")->where("payer", $userId)->where("specific_symbol", $payment->specificSymbol)->first();
 
-                    $userId = User::select("username")->where("id", $payment->variableSymbol ?? null)->first()->username ?? null;
-                    if ($userId) {
-                        $paymentId = Payment::select("id")->where("payer", $userId)->where("specific_symbol", $payment->specificSymbol)->first();
+                            if ($paymentId) {
+                                $transaction = Transaction::create(["payment_id" => $paymentId->id, "amount" => $payment->amount->value, "author" => "System", "type" => "bank_transfer"]);
 
-                        if ($paymentId) {
-                            $transaction = Transaction::create(["payment_id" => $paymentId->id, "amount" => $payment->amount->value, "author" => "System", "type" => "bank_transfer"]);
-
-                            $details['authorName'] = "System";
-                            $details['paymentId'] = $transaction["payment_id"];
-                            $details["username"] = "System";
-                            $details["transactionId"] = $transaction;
-                            dispatch(new SendTransactionCreatedJob($details));
+                                $details['authorName'] = "System";
+                                $details['paymentId'] = $transaction["payment_id"];
+                                $details["username"] = "System";
+                                $details["transactionId"] = $transaction;
+                                dispatch(new SendTransactionCreatedJob($details));
+                            }
                         }
+
+                        BankPaymentsLog::create([
+                            "transaction_id" => $payment->transactionId,
+                            "payer_account_number" => $payment->partnerAccount->number . "/" . $payment->partnerAccount->bankCode,
+                            "payer_account_name" => $payment->partnerAccount->partnerName,
+                            "amount" => $payment->amount->value,
+                            "currency" => $payment->amount->currency,
+                            "specific_symbol" => $payment->specificSymbol ?? "",
+                            "variable_symbol" => $payment->variableSymbol ?? ""
+                        ]);
+
                     }
-
-                    BankPaymentsLog::create([
-                        "transaction_id" => $payment->transactionId,
-                        "payer_account_number" => $payment->partnerAccount->number . "/" . $payment->partnerAccount->bankCode,
-                        "payer_account_name" => $payment->partnerAccount->partnerName,
-                        "amount" => $payment->amount->value,
-                        "currency" => $payment->amount->currency,
-                        "specific_symbol" => $payment->specificSymbol ?? "",
-                        "variable_symbol" => $payment->variableSymbol ?? ""
-                    ]);
-
                 }
             }
 

@@ -48,6 +48,15 @@ Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefi
     Route::get("/{id}", "show")->name("payment.detail");
 })->middleware('auth');
 
+Route::controller(\App\Http\Controllers\User\UserController::class)->prefix("user")->group(function () {
+    Route::get("/","index")->name("users.index");
+    Route::get("/search", "search")->name("users.search");
+    Route::get("/{id}", "edit")->name("users.edit");
+    Route::patch("/", "update")->name("users.update");
+})->middleware('auth');
+
+Route::get('/usergroups', \App\Http\Controllers\User\UserGroup::class);
+
 
 Route::controller(\App\Http\Controllers\Payment\TransactionsController::class)->group(function () {
     Route::post("/transaction", "store")->name("transaction.store");
