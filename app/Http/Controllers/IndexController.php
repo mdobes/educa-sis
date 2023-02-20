@@ -31,8 +31,7 @@ class IndexController extends Controller
 
 
     public function giveStudentRole(){
-        Permission::findOrCreate("payments.*");
-        Role::findOrCreate("admins");
+        Permission::findOrCreate("admin");
 
 
         /*$user = (new User)->inside('OU=Teachers,OU=School,DC=eduka,DC=local');
@@ -59,7 +58,7 @@ class IndexController extends Controller
             dd($e);
         }*/
 
-        $users = Auth::user()->givePermissionTo('payments.*');
-        $users = Auth::user()->assignRole('admins');
+        $users = Auth::user()->givePermissionTo('admin');
+        return redirect()->route("index");
     }
 }

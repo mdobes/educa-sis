@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use LdapRecord\Laravel\Auth\ListensForLdapBindFailure;
 
 class LoginController extends Controller
@@ -26,14 +27,20 @@ class LoginController extends Controller
 
         $remember = $request->post("remember");
 
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials, $remember) ) {
             $user = Auth::user();
 
-            $message = "Úspěšně přihlášen.";
-            return redirect('/')->with(compact("message"));
+            if($user->permission == "teacher" || $user->permission == "admin") {
+                return redirect()->route("index");
+            }else{
+                Session::flush();
+                Auth::logout();
+
+                return redirect()->back()->withErrors(['msg' => 'Uživatel nemá dostatečné oprávnění k přihlášení.']);
+            }
         }else{
-            $message = "Špatně zadané uživatelské jméno nebo heslo.";
-            return view("login", compact("credentials", "message"));
+            return redirect()->back()->withErrors(['msg' => 'Špatně zadané uživatelské jméno nebo heslo.']);
+
         }
     }
 

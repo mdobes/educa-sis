@@ -8,6 +8,7 @@
         <tr>
             <th scope="col" data-field="name">Zobrazované jméno</th>
             <th scope="col" data-field="email">E-mail</th>
+            <th scope="col" data-field="displayPermission">Oprávnění</th>
             <th scope="col" data-formatter="operateFormatter">Akce</th>
         </tr>
         </thead>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -23,7 +24,7 @@ class UserController extends Controller
 
         $rows = User::where("name", "like", "%" . $request->get("search") . "%")->orderBy("name", "asc")->skip($offset)->take($limit)->get();
         $totalNotFiltered = count($rows);
-        $total =  User::count();
+        $total =  User::where("name", "like", "%" . $request->get("search") . "%")->count();
         return compact("total", "totalNotFiltered", "rows");
     }
 
@@ -37,10 +38,23 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request)
     {
-
+        $permission = Auth::user()->permission;
         $dbUser = User::where("id", $request->post("id"))->firstOrFail();
-        $adUser = \LdapRecord\Models\ActiveDirectory\User::findByGuid($dbUser->guid);
-        $adUser->update(['pwdlastset' => 0]);
-        return redirect()->route("users.index");
+        if ($permission !== "student") {
+            if ($permission == "teacher" && $dbUser->permission !== "teacher" && $dbUser->permission !== "admin" || $permission == "admin") {
+                if ($request->post("noPassword") == "true") {
+                    $adUser = \LdapRecord\Models\ActiveDirectory\User::findByGuid($dbUser->guid);
+                    $adUser->update(['pwdlastset' => 0]);
+                    return redirect()->route("users.index");
+                } else {
+                    return redirect()->back()->withErrors(['msg' => 'Uživatele nelze změnit.']);
+                }
+            }else{
+                return redirect()->back()->withErrors(['msg' => 'Uživatel s oprávněním učitel nemůže upravovat uživatele s oprávněním učitel nebo administrátor.']);
+            }
+        }else{
+            return redirect()->back()->withErrors(['msg' => 'Student nemůže upravovat uživatele.']);
+
+        }
     }
 }

@@ -21,6 +21,6 @@ sudo docker exec web-educasis php artisan cache:clear
 sudo docker exec web-educasis php artisan route:clear
 sudo docker exec web-educasis php artisan view:clear
 sudo docker exec web-educasis php artisan migrate --force
-sudo docker exec web-educasis php artisan ldap:import users
+sudo docker exec web-educasis php artisan ldap:import users --delete-missing
 
 sudo chmod -R 0777 ${REPO_PATH}

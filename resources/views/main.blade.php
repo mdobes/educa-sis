@@ -24,24 +24,17 @@
                 <li class="nav-item">
                     <a class="nav-link {{request()->is('/') ? 'active' : ''}}" href="{{route("index")}}">Domů</a>
                 </li>
-                @hasanyrole("teachers|admins")
+                @if(Auth::user()->permission == "admin" || Auth::user()->permission == "teacher")
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ ( request()->is('payment*') || request()->is('payment')) ? 'active' : ''}}" href="#" role="button" data-bs-toggle="dropdown" data-bs- aria-expanded="false">
                         Správa plateb
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        @can("payments.view.created")
-                            <li><a class="dropdown-item" href="{{route("payment.show")}}">Mnou vytvořené platby</a></li>
-                        @endcan
-                        @can("payments.create")
-                            <li><a class="dropdown-item" href="{{route("payment.create")}}">Vytvořit platbu</a></li>
-                        @endcan
-                        @can("payments.view.banklog")
-                            <li><a class="dropdown-item" href="{{route("payment.banklog")}}">Výpis BÚ</a></li>
-                        @endcan
+                        <li><a class="dropdown-item" href="{{route("payment.show")}}">Mnou vytvořené platby</a></li>
+                        <li><a class="dropdown-item" href="{{route("payment.create")}}">Vytvořit platbu</a></li>
+                        <li><a class="dropdown-item" href="{{route("payment.banklog")}}">Výpis BÚ</a></li>
                     </ul>
                 </li>
-                @endhasanyrole
                 <li class="nav-item">
                     <a class="nav-link {{(request()->is('user*') || request()->is('user')) ? 'active' : ''}}" href="{{route("users.index")}}">Správa uživatelů</a>
                 </li>
@@ -56,6 +49,7 @@
                     </ul>
                 </li>
             </ul>
+            @endif
         </div>
     </div>
 </nav>

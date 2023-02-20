@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 
 use LdapRecord\Laravel\Auth\LdapAuthenticatable;
@@ -24,6 +25,8 @@ class User extends Authenticatable implements LdapAuthenticatable
      */
 
     protected $guard_name = 'web';
+
+    protected $appends = ["displayPermission", "permission"];
 
     protected $fillable = [
         'name',
@@ -63,6 +66,38 @@ class User extends Authenticatable implements LdapAuthenticatable
     public function getLdapGuidColumn()
     {
         return 'guid';
+    }
+
+    public function getPermissionAttribute()
+    {
+        $group = null;
+        if (str_contains($this->distinguished_name, "OU=Students")){
+            $group = "student";
+        } else if($this->can("admin")){
+            $group = "admin";
+        } else if (str_contains($this->distinguished_name, "OU=Teachers")){
+            $group = "teacher";
+        }
+
+        return $group;
+    }
+
+    public function getDisplayPermissionAttribute()
+    {
+        $text = "Žádná";
+        if($this->permission == "student") $text = "Student";
+        else if($this->permission == "teacher") $text = "Učitel";
+        else if($this->permission == "admin") $text = "Administrátor";
+
+        return $text;
+    }
+
+    public function getPasswordResetAttribute()
+    {
+        $adUser = \LdapRecord\Models\ActiveDirectory\User::findByGuid($this->guid);
+        $pass = $adUser->getAttribute('pwdlastset');
+        if (!$pass) return true;
+        else return false;
     }
 
     public function getLdapDomain()
