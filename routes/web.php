@@ -55,7 +55,9 @@ Route::controller(\App\Http\Controllers\User\UserController::class)->prefix("use
     Route::patch("/", "update")->name("users.update");
 })->middleware('auth');
 
-Route::get('/usergroups', \App\Http\Controllers\User\UserGroup::class);
+Route::get('/usergroups', [\App\Http\Controllers\User\UserGroup::class, "search"]);
+Route::get('/usergroups/import/{id}', [\App\Http\Controllers\User\UserGroup::class, "import"]);
+Route::get('/usergroups/user/{id}', [\App\Http\Controllers\User\UserGroup::class, "user"]);
 
 
 Route::controller(\App\Http\Controllers\Payment\TransactionsController::class)->group(function () {

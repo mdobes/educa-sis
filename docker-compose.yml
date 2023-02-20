@@ -20,7 +20,7 @@ services:
             - ./.docker/ldap.conf:/etc/ldap/ldap.conf
         networks:
             - "default"
-        #entrypoint: "php /var/www/html/artisan migrate --force"
+        command: bash -c "php /var/www/html/artisan queue:work --timeout=90 & while true; do php /var/www/html/artisan schedule:run --verbose --no-interaction; sleep 60; done"
 networks:
     default:
         external: true
