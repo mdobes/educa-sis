@@ -35,7 +35,7 @@ class IndexController extends Controller
         Role::findOrCreate("admins");
 
 
-        */$user = (new User)->inside('OU=Teachers,OU=School,DC=eduka,DC=local');
+        /*$user = (new User)->inside('OU=Teachers,OU=School,DC=eduka,DC=local');
 
         $pwdtxt = "Education2022";
         $newPassword = '"' . $pwdtxt . '"';
