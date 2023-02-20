@@ -35,7 +35,7 @@ class IndexController extends Controller
         Role::findOrCreate("admins");
 
 
-        $user = (new User)->inside('OU=Teachers,OU=School,DC=eduka,DC=local');
+        */$user = (new User)->inside('OU=Teachers,OU=School,DC=eduka,DC=local');
 
         $pwdtxt = "Education2022";
         $newPassword = '"' . $pwdtxt . '"';
@@ -57,7 +57,7 @@ class IndexController extends Controller
             $user->save();
         } catch (\LdapRecord\LdapRecordException $e) {
             dd($e);
-        }
+        }*/
 
         $users = Auth::user()->givePermissionTo('payments.*');
         $users = Auth::user()->assignRole('admins');
