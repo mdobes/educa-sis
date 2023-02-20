@@ -1,4 +1,4 @@
-name: remote ssh command
+name: Autodeploy EDUCA-SIS
 on: [push]
 jobs:
 
@@ -6,11 +6,11 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands using password
+    - name: Autodeploy EDUCA-SIS
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: cd /home/${{ secrets.USERNAME }}/ && ./deploy.sh
+        script: cd /home/${{ secrets.USERNAME }}/educa-sis && ./deploy.sh
