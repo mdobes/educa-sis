@@ -4,7 +4,7 @@ if [[ ! -d "${REPO_PATH}" ]]; then
   git clone https://github.com/mdobes/educa-sis "${REPO_PATH}"
 fi
 
-sudo docker exec educa-sis php artisan down --secret="secret-key"
+sudo docker exec web-educasis php artisan down --secret="secret-key"
 
 cd "${REPO_PATH}" &&
   git clean -fd &&
@@ -21,6 +21,6 @@ sudo docker exec web-educasis php artisan cache:clear
 sudo docker exec web-educasis php artisan route:clear
 sudo docker exec web-educasis php artisan view:clear
 sudo docker exec web-educasis php artisan migrate --force
-sudo docker exec web-educasis php artisan ldap:import
+sudo docker exec web-educasis php artisan ldap:import users
 
 sudo chmod -R 0777 ${REPO_PATH}
