@@ -5,6 +5,7 @@ Maturitní práce Michala Dobeše.
 
 
 Systém zajištuje:
-- platební systém
+- platební systém včetně napojení na banku (automatické párování plateb)
 - správu Active Directory uživatelů pomocí LDAP
-- správce karet Zdravotní pojištovny
+- import skupin uživatelů pomocí Microsoft GraphQL API
+- správu uživatelů Adobe Creative Cloudu pomocí Adobe REST API   
