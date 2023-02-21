@@ -11,6 +11,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\CheckBankPayments::class,
         Commands\GetAzureBearerToken::class,
+        Commands\AssignAdminUser::class,
+        Commands\CreateAdminPermission::class
     ];
 
     /**

@@ -29,7 +29,10 @@ class BankPaymentsLogController extends Controller
             ->take($limit)
             ->get();
         $totalNotFiltered = count($rows);
-        $total =  BankPaymentsLog::count();
+        $total =  BankPaymentsLog::
+            where("payer_account_number", "like", "%" . $request->get("search") . "%")
+            ->orWhere("payer_account_name", "like", "%" . $request->get("search") . "%")
+            ->count();
 
         return compact("total", "totalNotFiltered", "rows");
     }

@@ -39,14 +39,14 @@ class PaymentController extends Controller
         if($request->get("showType") == "my"){
             $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->where("author", Auth::user()->username)->orderBy("created_at", "desc")->skip($offset)->take($limit)->get();
             $totalNotFiltered = count($rows);
-            $total =  Group::where("author", Auth::user()->username)->count();
+            $total =  Group::where("name", "like", "%" . $request->get("search") . "%")->where("author", Auth::user()->username)->count();
 
             return compact("total", "totalNotFiltered", "rows");
-        }else if($request->get("showType") == "all" && $user->can("payments.view.all")){
+        }else if($request->get("showType") == "all" && $user->permission == "admin"){
 
             $rows = Group::where("name", "like", "%" . $request->get("search") . "%")->orderBy("created_at", "desc")->skip($offset)->take($limit)->get();
             $totalNotFiltered = count($rows);
-            $total =  Group::count();
+            $total =  Group::where("name", "like", "%" . $request->get("search") . "%")->count();
 
             return compact("total", "totalNotFiltered", "rows");
         }
@@ -56,7 +56,7 @@ class PaymentController extends Controller
 
     public function showGroup(Group $group){
         $user = Auth::user();
-        if ($user->username !== $group->author && $user->permission !== "admin" || $user->permission !== "teacher") return abort(403);
+        if ($user->username !== $group->author || $user->permission !== "admin") return abort(403);
         return view("payments.group", compact("group"));
     }
 
