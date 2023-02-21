@@ -55,10 +55,14 @@ Route::controller(\App\Http\Controllers\User\UserController::class)->prefix("use
     Route::patch("/", "update")->name("users.update");
 })->middleware('auth');
 
-Route::get('/usergroups', [\App\Http\Controllers\User\UserGroup::class, "search"]);
-Route::get('/usergroups/import/{id}', [\App\Http\Controllers\User\UserGroup::class, "import"]);
-Route::get('/usergroups/user/{id}', [\App\Http\Controllers\User\UserGroup::class, "user"]);
-
+Route::controller(\App\Http\Controllers\User\UserGroupController::class)->prefix("usergroup")->group(function () {
+    Route::get("/", "index")->name("usergroup.index");
+    Route::get("/search", "search")->name("usergroup.search");
+    Route::get("/create", "create")->name("usergroup.create");
+    Route::get("/{id}", "edit")->name("usergroup.edit");
+    Route::post("/", "store")->name("usergroup.store");
+    Route::patch("/", "update")->name("usergroup.update");
+})->middleware('auth');
 
 Route::controller(\App\Http\Controllers\Payment\TransactionsController::class)->group(function () {
     Route::post("/transaction", "store")->name("transaction.store");

@@ -32,6 +32,7 @@ class PaymentController extends Controller
      * @return array
      */
     public function search(SearchPaymentRequest $request){
+        //TODO: práva
         $user = Auth::user();
         $offset = ($request->get("offset") ?? 0);
         $limit = ($request->get("limit") ?? 10);
