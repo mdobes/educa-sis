@@ -58,10 +58,17 @@ Route::controller(\App\Http\Controllers\User\UserController::class)->prefix("use
 Route::controller(\App\Http\Controllers\User\UserGroupController::class)->prefix("usergroup")->group(function () {
     Route::get("/", "index")->name("usergroup.index");
     Route::get("/search", "search")->name("usergroup.search");
+    Route::get("/import", "import")->name("usergroup.import");
+    Route::get("/import/{id}", "importStart")->name("usergroup.import.start");
     Route::get("/create", "create")->name("usergroup.create");
     Route::get("/{id}", "edit")->name("usergroup.edit");
     Route::post("/", "store")->name("usergroup.store");
     Route::patch("/", "update")->name("usergroup.update");
+
+    Route::prefix("/microsoft")->group(function () {
+        Route::get("/search", "microsoftImportSearch")->name("usergroup.microsoft.search");
+    });
+
 })->middleware('auth');
 
 Route::controller(\App\Http\Controllers\Payment\TransactionsController::class)->group(function () {

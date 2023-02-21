@@ -4,6 +4,8 @@
 
 @section("actions")
     <a href="{{route("usergroup.create")}}"><i class="ti ti-plus"></i> Vytvořit novou skupinu</a>
+    <a href="{{route("usergroup.import")}}"><i class="ti ti-database-import"></i> Importovat skupinu</a>
+
 @endsection
 
 @section("content")
@@ -17,7 +19,6 @@
         <tbody>
         </tbody>
     </table>
-
 @endsection
 @section("scripts")
     <script>

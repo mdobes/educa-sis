@@ -16,21 +16,36 @@ class UserGroupController extends Controller
 {
 
     public function index(){
-        return view("usergroups.index");
+        $permission = Auth::user()->permission;
+        if ($permission == "admin"){
+            return view("usergroups.index");
+        }else{
+            return abort(403);
+        }
     }
 
     public function search(Request $request){
-        $offset = ($request->get("offset") ?? 0);
-        $limit = ($request->get("limit") ?? 10);
+        $permission = Auth::user()->permission;
+        if ($permission == "admin") {
+            $offset = ($request->get("offset") ?? 0);
+            $limit = ($request->get("limit") ?? 10);
 
-        $rows = UserGroup::where("name", "like", "%" . $request->get("search") . "%")->orderBy("name", "asc")->skip($offset)->take($limit)->get();
-        $totalNotFiltered = count($rows);
-        $total =  UserGroup::where("name", "like", "%" . $request->get("search") . "%")->count();
-        return compact("total", "totalNotFiltered", "rows");
+            $rows = UserGroup::where("name", "like", "%" . $request->get("search") . "%")->orderBy("name", "asc")->skip($offset)->take($limit)->get();
+            $totalNotFiltered = count($rows);
+            $total = UserGroup::where("name", "like", "%" . $request->get("search") . "%")->count();
+            return compact("total", "totalNotFiltered", "rows");
+        }else{
+            return abort(403);
+        }
     }
 
     public function edit(UserGroup $id){
-        return view("usergroups.edit", compact("id"));
+        $permission = Auth::user()->permission;
+        if ($permission == "admin") {
+            return view("usergroups.edit", compact("id"));
+        }else{
+            return abort(403);
+        }
     }
 
     public function create(){
@@ -41,15 +56,19 @@ class UserGroupController extends Controller
     {
         $permission = Auth::user()->permission;
         if ($permission == "admin") {
-            foreach(explode(",", $request->post("users")) as $username){
-                $user = User::where("username", $username)->first();
-                if(!$user) return redirect()->back()->withErrors(['msg' => 'Uživatel s uživatelským jménem ' . $username . ' neexistuje.']);
+            $permission = Auth::user()->permission;
+            if ($permission == "admin") {
+                foreach (explode(",", $request->post("users")) as $username) {
+                    $user = User::where("username", $username)->first();
+                    if (!$user) return redirect()->back()->withErrors(['msg' => 'Uživatel s uživatelským jménem ' . $username . ' neexistuje.']);
+                }
+                UserGroup::whereId($request->post("id"))->update(["users" => $request->post("users")]);
+                return redirect()->route("usergroup.index");
+            } else {
+                return redirect()->back()->withErrors(['msg' => 'Nemáte dostatečná oprávnění k úpravě skupin.']);
             }
-            UserGroup::whereId($request->post("id"))->update(["users" => $request->post("users")]);
-            return redirect()->route("usergroup.index");
         }else{
-            return redirect()->back()->withErrors(['msg' => 'Nemáte dostatečná oprávnění k úpravě skupin.']);
-
+            return abort(403);
         }
     }
 
@@ -57,51 +76,98 @@ class UserGroupController extends Controller
     {
         $permission = Auth::user()->permission;
         if ($permission == "admin") {
-            foreach(explode(",", $request->post("users")) as $username){
-                $user = User::where("username", $username)->first();
-                if(!$user) return redirect()->back()->withErrors(['msg' => 'Uživatel s uživatelským jménem ' . $username . ' neexistuje.'])->withInput($request->all());
+            $permission = Auth::user()->permission;
+            if ($permission == "admin") {
+                foreach (explode(",", $request->post("users")) as $username) {
+                    $user = User::where("username", $username)->first();
+                    if (!$user) return redirect()->back()->withErrors(['msg' => 'Uživatel s uživatelským jménem ' . $username . ' neexistuje.'])->withInput($request->all());
+                }
+                UserGroup::create(["name" => $request->post("name"), "users" => $request->post("users")]);
+                return redirect()->route("usergroup.index");
+            } else {
+                return redirect()->back()->withErrors(['msg' => 'Nemáte dostatečná oprávnění k vytváření skupin.'])->withInput($request->all());
             }
-            UserGroup::create($request->all());
-            return redirect()->route("usergroup.index");
         }else{
-            return redirect()->back()->withErrors(['msg' => 'Nemáte dostatečná oprávnění k vytváření skupin.'])->withInput($request->all());
-
+            return abort(403);
         }
     }
 
-    public function microsoftImportSearch(){
-        $client = new Client();
-        $response = $client->get('https://graph.microsoft.com/v1.0/groups?$search="displayName:m2019"', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . Cache::get("azureBearer"),
-                'ConsistencyLevel' => 'eventual'
-            ],
-        ]);
+    public function import(){
+        $permission = Auth::user()->permission;
+        if ($permission == "admin") {
+            return view("usergroups.import");
+        }else{
+            return abort(403);
+        }
+    }
 
-        dd(json_decode($response->getBody()));
+    public function importStart(String $id){
+        $permission = Auth::user()->permission;
+        if ($permission == "admin") {
+
+            $client = new Client();
+            $response = $client->get('https://graph.microsoft.com/v1.0/groups/' . $id , [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . Cache::get("azureBearer")
+                ],
+            ]);
+            $name = json_decode($response->getBody())->displayName;
+
+            $client = new Client();
+            $response = $client->get('https://graph.microsoft.com/v1.0/groups/' . $id . '/members', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . Cache::get("azureBearer")
+                ],
+            ]);
+
+            $json = json_decode($response->getBody(), true);
+            $users = implode(',', array_map(function ($entry) {
+                $entry = explode("@", $entry["mail"])[0];
+                return $entry;
+            }, $json["value"]));
+
+            return view("usergroups.importStart", compact("id", "name", "json", "users"));
+        }else{
+            return abort(403);
+        }
+    }
+
+    public function microsoftImportSearch(Request $request){
+        $permission = Auth::user()->permission;
+        if ($permission == "admin") {
+            $client = new Client();
+            if ($request->get("search")) {
+                $uri = 'https://graph.microsoft.com/v1.0/groups?$search="displayName:' . $request->get("search") . '"';
+            } else {
+                $uri = 'https://graph.microsoft.com/v1.0/groups';
+            }
+            $response = $client->get($uri, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . Cache::get("azureBearer"),
+                    'ConsistencyLevel' => 'eventual'
+                ],
+            ]);
+
+            return json_decode($response->getBody());
+        }else{
+            return abort(403);
+        }
     }
 
     public function microsoftImport(String $id){
-        $client = new Client();
-        //dd(Cache::get("azureBearer"));
-        $response = $client->get('https://graph.microsoft.com/v1.0/groups/' . $id . '/members', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . Cache::get("azureBearer")
-            ],
-        ]);
+        $permission = Auth::user()->permission;
+        if ($permission == "admin") {
+            $client = new Client();
+            $response = $client->get('https://graph.microsoft.com/v1.0/groups/' . $id . '/members', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . Cache::get("azureBearer")
+                ],
+            ]);
 
-        dd(json_decode($response->getBody()));
+            return json_decode($response->getBody());
+        }else{
+            return abort(403);
+        }
     }
 
-    public function microsoftUser(String $id){
-        $client = new Client();
-        //dd(Cache::get("azureBearer"));
-        $response = $client->get('https://graph.microsoft.com/v1.0/users/' . $id, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . Cache::get("azureBearer")
-            ],
-        ]);
-
-        dd(json_decode($response->getBody()));
-    }
 }
