@@ -55,7 +55,7 @@ class PaymentController extends Controller
 
     public function showGroup(Group $group){
         $user = Auth::user();
-        if ($user->username !== $group->author && !$user->can("payments.view.all")) return abort(403);
+        if ($user->username !== $group->author && $user->permission !== "admin" || $user->permission !== "teacher") return abort(403);
         return view("payments.group", compact("group"));
     }
 
@@ -87,7 +87,7 @@ class PaymentController extends Controller
     {
         $user = Auth::user();
 
-        if($user->hasPermissionTo('payments.create')) {
+        if($user->permission == "admin" || $user->permission == "teacher") {
             $formButtonTitle = "Vytvořit";
             return view('payments.create', compact("formButtonTitle"));
         }else{
@@ -109,7 +109,7 @@ class PaymentController extends Controller
         $route = "payment.show.my";
         $routeRedirect = null;
 
-        if($user->hasPermissionTo('payments.create')) {
+        if($user->permission == "admin" || $user->permission == "teacher") {
 
             $group = Group::create([
                 "name" => $request->post("title"),
@@ -185,7 +185,7 @@ class PaymentController extends Controller
         $user = Auth::user();
         $username = $user->username;
 
-        if($data->author == $username || $data->payer == $username || $user->hasPermissionTo('payments.any.view')){
+        if($data->author == $username || $user->permission == "admin"){
             $qrPlatba = new QRPlatba();
 
             $qrPlatba->setAccount(config("bank.bank.acc_number"))

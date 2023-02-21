@@ -10,13 +10,13 @@
         </div>
         <div class="d-block mb-2"></div>
     @endcan
-    @can("payments.create")
-    <a href="{{route("payment.create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
-    @endcan
+    @if(Auth::user()->permission == "admin" || Auth::user()->permission == "teacher")
+        <a href="{{route("payment.create")}}"><i class="ti ti-plus"></i> Vytvořit novou platbu</a>
+    @endif
 @endsection
 
 @section("content")
-    <table class="table" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true"  data-side-pagination="server"  data-pagination="true">
+    <table class="table" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true" data-side-pagination="server"  data-pagination="true">
         <thead>
         <tr>
             <th scope="col" data-field="name">Název skupiny</th>
