@@ -107,17 +107,12 @@ class PaymentController extends Controller
         $user = Auth::user();
         $username = $user->username;
 
-        $route = "payment.show.my";
-        $routeRedirect = null;
-
         if($user->permission == "admin" || $user->permission == "teacher") {
 
             $group = Group::create([
                 "name" => $request->post("title"),
                 "author" => $username
             ]);
-
-            $authorName = Auth::user()->name;
 
             foreach($request->post("payer") as $list){
                 $info = explode(":", $list);
@@ -215,29 +210,6 @@ class PaymentController extends Controller
         $formButtonTitle = "Editovat";
         //return $data;
         return view('payments.edit', compact("data", "formButtonTitle"));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function searchPayers(Request $request){

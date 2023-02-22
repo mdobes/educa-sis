@@ -11603,5 +11603,16 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.btn-primary {
+  --bs-btn-color: white;
+}
+
+.logo {
+  max-width: 100%;
+}
+
+.logo-main {
+  max-height: 2.3rem;
+}
 
 /*# sourceMappingURL=bootstrap.css.map */

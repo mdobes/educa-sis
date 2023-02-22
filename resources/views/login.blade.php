@@ -40,6 +40,15 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+        .border-b-0 {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .logo{
+            height: 100%;
+        }
     </style>
 </head>
 <body class="text-center">
@@ -48,19 +57,17 @@
         <img class="mb-5" src="{{asset("assets/images/logo.svg")}}" alt="Educa Logo" height="80">
 
         @if(!empty($errors->all()))
-        <div class="alert alert-secondary" role="alert">
-            <ul class="mb-0">
+        <div class="alert alert-warning text-center" role="alert">
                 @foreach ($errors->all() as $error)
-                    <li>{{ __($error) }}</li>
+                    {{ __($error) }}<br>
                 @endforeach
-            </ul>
         </div>
         @endif
 
         <h1 class="h3 mb-3 fw-normal">Přihlášení</h1>
 
         <div class="form-floating">
-            {!! Form::text("username", old("mail"), ["class" => "form-control", "required" => true, "id" => "username", "placeholder" => "Username"]) !!}
+            {!! Form::text("username", old("mail"), ["class" => "form-control border-b-0", "required" => true, "id" => "username", "placeholder" => "Username"]) !!}
             {!! Form::label("username", "Uživatelské jméno") !!}
         </div>
         <div class="form-floating">
@@ -70,29 +77,25 @@
 
         <div class="checkbox mb-3">
             <label>
-                <input type="checkbox" value="true" name="remember"> Zapamatovat si přihlášení
+                <input type="checkbox" checked value="true" name="remember"> Zapamatovat si přihlášení
             </label>
         </div>
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Přihlásit se</button>
-    <div class="mt-5">
-        <span class="mb-3 mb-md-0 text-muted"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none"> <img src="{{asset("assets/images/dobes.svg")}}" alt="Michal Dobeš favicon" height="24"> © 2022 Michal Dobeš</a></span>
-        <hr>
-        <span class="text-muted">{{config("app.name")}} v{{config('app.version')}}</span>
-        <a class="text-muted" href="https://github.com/mdobes/educa-sis" target="_blank">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-git" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <circle cx="16" cy="12" r="1" />
-                <circle cx="12" cy="8" r="1" />
-                <circle cx="12" cy="16" r="1" />
-                <path d="M12 15v-6" />
-                <path d="M15 11l-2 -2" />
-                <path d="M11 7l-1.9 -1.9" />
-                <path d="M10.5 20.4l-6.9 -6.9c-.781 -.781 -.781 -2.219 0 -3l6.9 -6.9c.781 -.781 2.219 -.781 3 0l6.9 6.9c.781 .781 .781 2.219 0 3l-6.9 6.9c-.781 .781 -2.219 .781 -3 0z" />
-            </svg>
-        </a>
-    </div>
+        <div class="mt-5 opacity-50">
+            <div class="row">
+                <div class="col">
+                    <a href="https://dbes.cz" target="_blank" class="text-decoration-none"> <img src="{{asset("assets/images/dobes.svg")}}" class="logo-main" alt="Michal Dobeš favicon"></a>
+                    <br>
+                    <a href="https://dbes.cz" target="_blank" class="text-black text-decoration-none">© 2022-{{\Carbon\Carbon::now()->format("Y")}} Michal Dobeš</a><br>
+                    <span class="">{{config("app.name")}} v{{config('app.version')}}</span>
+                    <a class="text-black" href="https://github.com/mdobes/educa-sis" target="_blank">
+                        <i class="ti ti-brand-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    </form>
+    {!! Form::close() !!}
 </main>
 </body>

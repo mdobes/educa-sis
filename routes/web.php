@@ -44,7 +44,6 @@ Route::controller(\App\Http\Controllers\Payment\PaymentController::class)->prefi
     Route::get("/paid", ["uses" => "index", "type" => "myPaid"])->name("payment.mypaid");
     Route::get("/created", ["uses" => "index", "type" => "created"])->name("payment.created");
     Route::get("/create","create")->name("payment.create");
-    Route::get("/edit/{id}","edit")->name("payment.edit");
     Route::get("/{id}", "show")->name("payment.detail");
 })->middleware('auth');
 

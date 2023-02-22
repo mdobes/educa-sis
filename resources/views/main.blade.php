@@ -36,8 +36,13 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{(request()->is('user*') || request()->is('user')) ? 'active' : ''}}" href="{{route("users.index")}}">Správa uživatelů</a>
+                    <a class="nav-link {{(request()->is('user') || request()->is('user/*') && !request()->is('usergroup')) ? 'active' : ''}}" href="{{route("users.index")}}">Správa uživatelů</a>
                 </li>
+                    @if(Auth::user()->permission == "admin")
+                        <li class="nav-item">
+                            <a class="nav-link {{(request()->is('usergroup*') && !request()->is('user/*')) ? 'active' : ''}}" href="{{route("usergroup.index")}}">Správa skupin</a>
+                        </li>
+                    @endif
             </ul>
             <ul class="navbar-nav d-flex">
                 <li class="nav-item dropdown">
@@ -80,31 +85,19 @@
 </div>
 
 <div class="container">
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-        <div class="col-md-4 d-flex align-items-center">
-            <a href="https://dbes.cz" target="_blank" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-                <img src="{{asset("assets/images/dobes.svg")}}" alt="Michal Dobeš favicon" height="24">
-            </a>
-            <span class="mb-3 mb-md-0 text-muted me-4"><a href="https://dbes.cz" target="_blank" class="text-muted text-decoration-none">© 2022 Michal Dobeš</a></span> <span class="text-muted">({{config("app.name")}} v{{config('app.version')}})</span>
-        </div>
-
-        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-            <li class="ms-3">
-                <a class="text-muted" href="https://github.com/mdobes/educa-sis" target="_blank">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-git" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <circle cx="16" cy="12" r="1" />
-                        <circle cx="12" cy="8" r="1" />
-                        <circle cx="12" cy="16" r="1" />
-                        <path d="M12 15v-6" />
-                        <path d="M15 11l-2 -2" />
-                        <path d="M11 7l-1.9 -1.9" />
-                        <path d="M10.5 20.4l-6.9 -6.9c-.781 -.781 -.781 -2.219 0 -3l6.9 -6.9c.781 -.781 2.219 -.781 3 0l6.9 6.9c.781 .781 .781 2.219 0 3l-6.9 6.9c-.781 .781 -2.219 .781 -3 0z" />
-                    </svg>
+    <div class="mt-5 mb-4 opacity-50">
+        <div class="row text-center">
+            <div class="col">
+                <a href="https://dbes.cz" target="_blank" class="text-decoration-none"> <img src="{{asset("assets/images/dobes.svg")}}" class="logo-main" alt="Michal Dobeš favicon"></a>
+                <br>
+                <a href="https://dbes.cz" target="_blank" class="text-black text-decoration-none">© 2022-{{\Carbon\Carbon::now()->format("Y")}} Michal Dobeš</a><br>
+                <span class="">{{config("app.name")}} v{{config('app.version')}}</span>
+                <a class="text-black" href="https://github.com/mdobes/educa-sis" target="_blank">
+                    <i class="ti ti-brand-github"></i>
                 </a>
-            </li>
-        </ul>
-    </footer>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="{{asset("assets/js/jquery-3.6.3.min.js")}}"></script>
 <script src="{{asset("assets/js/bootstrap.bundle.min.js")}}"></script>
