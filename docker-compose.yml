@@ -18,6 +18,7 @@ services:
         volumes:
             - ./:/var/www/html/
             - ./.docker/ldap.conf:/etc/ldap/ldap.conf
+            - ./.docker/supervisor.conf:/etc/supervisor/conf.d
         networks:
             - "default"
         #command: bash -c "php /var/www/html/artisan queue:work --timeout=90 & while true; do php /var/www/html/artisan schedule:run --verbose --no-interaction; sleep 60; done"

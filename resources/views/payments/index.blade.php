@@ -3,7 +3,7 @@
 @section("title", $title)
 
 @section("actions")
-    @if(true)
+    @if(Auth::user()->permission == "admin")
         <div class="btn-group" role="group">
             <a href="{{url()->route("payment.show")}}" class="btn {{(request()->is("payment") || request()->is("payment/my")) ? 'btn-primary' : 'btn-outline-primary'}}">Mnou vytvořené</a>
             <a href="{{url()->route("payment.show.all")}}" class="btn {{request()->is("payment/all") ? 'btn-primary' : 'btn-outline-primary'}}">Všechny vytvořené</a>

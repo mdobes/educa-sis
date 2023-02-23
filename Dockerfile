@@ -10,6 +10,8 @@ RUN apt-get update \
     zip \
     supervisor
 
+ADD .docker/php/workers /etc/supervisor/conf.d
+
 RUN \
 apt-get install libldap2-dev libldap-common -y && \
 rm -rf /var/lib/apt/lists/* && \
@@ -30,5 +32,5 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 WORKDIR /var/www/html/
-
+CMD ["/usr/bin/supervisord"]
 EXPOSE 8050

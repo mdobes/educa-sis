@@ -55,7 +55,7 @@ class PaymentController extends Controller
 
     public function showGroup(Group $group){
         $user = Auth::user();
-        if ($user->username !== $group->author || $user->permission !== "admin") return abort(403);
+        if ($user->username !== $group->author && $user->permission !== "admin") return abort(403);
         return view("payments.group", compact("group"));
     }
 
