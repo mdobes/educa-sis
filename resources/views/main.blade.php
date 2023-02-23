@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Educa SIS | @yield("title")</title>
+    <title>Educa SIS | @yield("title") @yield("nfTitle")</title>
     <link href="{{asset("assets/css/scss/bootstrap.css")}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset("assets/css/tabler-icons.min.css")}}">
     <link rel="stylesheet" href="{{asset("assets/css/select2.min.css")}}">
@@ -67,13 +67,17 @@
 
 <div class="container mt-5 mb-5">
 
+    @hasSection('title')
     <div class="header mb-3">
         <h1><b>@yield("title")</b></h1>
     </div>
+    @endif
 
+    @hasSection('actions')
     <div class="actions mb-3">
         @yield("actions")
     </div>
+    @endif
 
     <ul>
         @foreach ($errors->all() as $error)
