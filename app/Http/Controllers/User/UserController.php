@@ -7,6 +7,7 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -44,8 +45,10 @@ class UserController extends Controller
             if ($permission == "teacher" && $dbUser->permission !== "teacher" && $dbUser->permission !== "admin" || $permission == "admin") {
                 if ($request->post("noPassword") == "true") {
                     $adUser = \LdapRecord\Models\ActiveDirectory\User::findByGuid($dbUser->guid);
+                    $str = Str::random(5);
                     $adUser->update(['pwdlastset' => 0]);
-                    return redirect()->route("users.index");
+                    $adUser->unicodepwd = $str;
+                    return redirect()->route("users.index")->withErrors(['msg' => "Uživateli $dbUser->username bylo změneno heslo na $str"]);
                 } else {
                     return redirect()->back()->withErrors(['msg' => 'Uživatele nelze změnit.']);
                 }

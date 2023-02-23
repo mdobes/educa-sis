@@ -23,6 +23,14 @@ class Group extends Model
         return Payment::where('group', $this->id)->get()->sum('remain');
     }
 
+    public function getPaidCashAttribute(){
+        return Payment::where('group', $this->id)->get()->sum('transactionsCash');
+    }
+
+    public function getPaidBankAttribute(){
+        return Payment::where('group', $this->id)->get()->sum('transactionsBank');
+    }
+
     public function getPaidAttribute(){
         return Payment::where('group', $this->id)->get()->sum('paid');
     }

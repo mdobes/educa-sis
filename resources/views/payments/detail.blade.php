@@ -5,8 +5,10 @@
 @section("actions")
     <a href="{{url()->route("payment.group", $data->group)}}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
 
-    @if($data->remain !== 0 && $data->author == $username || $user->hasPermissionTo('payments.any.edit'))
-        <a href="#" data-bs-toggle="modal" data-bs-target="#addTransaction"><i class="ti ti-cash"></i> Přidat úhradu</a>
+    @if($data->remain > 0)
+        @if($data->author == $username || Auth::user()->permission == "admin")
+            <a href="#" data-bs-toggle="modal" data-bs-target="#addTransaction"><i class="ti ti-cash"></i> Přidat hotovostní úhradu</a>
+        @endif
     @endif
 @endsection
 
@@ -35,8 +37,9 @@
     </div>
 
     <div class="row">
+        <h2>{{$data->payerFormatted}} - {{$data->title}}</h2>
         <div class="col-12 col-md-7">
-            <h2>Detail platby</h2>
+            <h3>Detail platby</h3>
             <div class="row">
                 <div class="col-12 col-md-4">
                     <img class="img-fluid" src="{{$img}}">
@@ -46,15 +49,16 @@
                     <b>Variabilní symbol:</b> {{$data->payerUserId}}<br>
                     <b>Specifický symbol</b> {{ $data->specific_symbol }}<br/>
                     <b>Částka:</b> {{$data->amount}} Kč<br>
+                    <b>Zbývá:</b> {{$data->remain}} Kč<br>
                     <hr>
-                    <b>Splatnost:</b> {{\Carbon\Carbon::parse($data->due)->format("d.m.Y")}}<br>
+                    <b>Splatnost:</b> {{$data->dueFormatted}}<br>
                     <b>Popis platby:</b> {{$data->title}}<br>
                     <b>Zadal:</b> {{$data->authorFormatted}}
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-5">
-            <h2>Proběhlé transakce</h2>
+            <h3>Proběhlé transakce</h3>
             <table class="table">
                 <thead>
                 <tr>

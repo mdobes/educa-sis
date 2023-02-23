@@ -20,6 +20,14 @@ class Payment extends Model
         return $this->hasMany(Transaction::class, "payment_id", "id");
     }
 
+    public function getTransactionsCashAttribute(){
+        return $this->hasMany(Transaction::class, "payment_id", "id")->where("type", "cash")->sum("amount");
+    }
+
+    public function getTransactionsBankAttribute(){
+        return $this->hasMany(Transaction::class, "payment_id", "id")->where("type", "bank_transfer")->sum("amount");
+    }
+
     public function getRemainAttribute(){
         return $this->amount - $this->hasMany(Transaction::class, "payment_id", "id")->sum("amount");
     }
@@ -41,7 +49,7 @@ class Payment extends Model
     }
 
     public function getDueFormattedAttribute(){
-        return \Carbon\Carbon::parse($this->due)->format("d. m. Y");
+        return \Carbon\Carbon::parse($this->due)->format("d.m.Y");
     }
 
     public function getPaidFormattedAttribute(){

@@ -2,6 +2,10 @@
 
 @section("title", "Editace skupiny")
 
+@section("actions")
+    <a href="{{url()->route("usergroup.index")}}"><i class="ti ti-arrow-back"></i> Zpět na seznam</a>
+@endsection
+
 @section("content")
     {!! Form::open(["url" => route("usergroup.update"), "method" => "patch", "id" => "edit-form"]) !!}
     {!! Form::hidden("id", $id->id)!!}

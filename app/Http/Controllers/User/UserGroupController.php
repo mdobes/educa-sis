@@ -78,10 +78,12 @@ class UserGroupController extends Controller
         if ($permission == "admin") {
             $permission = Auth::user()->permission;
             if ($permission == "admin") {
-                foreach (explode(",", $request->post("users")) as $username) {
+                $userListNotExist = [];
+                foreach (explode(",", str_replace(" ", "", $request->post("users"))) as $username) {
                     $user = User::where("username", $username)->first();
-                    if (!$user) return redirect()->back()->withErrors(['msg' => 'Uživatel s uživatelským jménem ' . $username . ' neexistuje.'])->withInput($request->all());
+                    if (!$user) array_push($userListNotExist, $username);
                 }
+                if (!empty($userListNotExist)) return redirect()->back()->withErrors(['msg' => 'Uživatelé s uživatelskými jmény ' . implode(",", $username) . ' neexistuje.'])->withInput($request->all());
                 UserGroup::create(["name" => $request->post("name"), "users" => $request->post("users")]);
                 return redirect()->route("usergroup.index");
             } else {
