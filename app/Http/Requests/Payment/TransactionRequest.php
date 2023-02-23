@@ -27,6 +27,8 @@ class TransactionRequest extends FormRequest
         return [
             'amount' => 'required|int|min:1|max_digits::11',
             'payment_id' => ['required', 'max:255', Rule::exists("payments_list", "id")],
+            "type" => "string|in:bank_transfer,cash",
+            "note" => "max:255"
         ];
     }
 }

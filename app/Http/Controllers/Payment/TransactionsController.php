@@ -32,7 +32,6 @@ class TransactionsController extends Controller
 
         $data = $request->all();
         $data["author"] = Auth::user()->username;
-        $data["type"] = "cash";
 
         $payment = Payment::find($data["payment_id"]);
         $user = Auth::user();
@@ -55,5 +54,27 @@ class TransactionsController extends Controller
         }else{
             return abort(403);
         }
+    }
+
+    public function unPair(Transaction $id){
+        //TODO: práva
+        $details['authorName'] = Auth::user()->name;
+        $details['paymentId'] = $id->payment_id;
+        $details["username"] = $id->author;
+        $details["transactionId"] = $id;
+        $id->delete();
+        dispatch(new SendTransactionCreatedJob($details));
+        return redirect()->route("payment.detail", $id->payment->id);
+    }
+
+    public function restorePair(Transaction $id){
+        //TODO: práva
+        $details['authorName'] = Auth::user()->name;
+        $details['paymentId'] = $id->payment_id;
+        $details["username"] = $id->author;
+        $details["transactionId"] = $id;
+        $id->restore();
+        dispatch(new SendTransactionCreatedJob($details));
+        return redirect()->route("payment.detail", $id->payment->id);
     }
 }

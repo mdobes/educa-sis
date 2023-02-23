@@ -5,6 +5,7 @@ namespace App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
@@ -17,7 +18,7 @@ class Payment extends Model
     protected $fillable = ["payer", "author", "type", "title", "amount", "due", "specific_symbol", "group"];
 
     public function transactions(){
-        return $this->hasMany(Transaction::class, "payment_id", "id");
+        return $this->hasMany(Transaction::class, "payment_id", "id")->withTrashed()->orderBy("created_at", "desc");
     }
 
     public function getTransactionsCashAttribute(){

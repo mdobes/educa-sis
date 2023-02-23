@@ -40,7 +40,7 @@ class SendTransactionCreatedJob implements ShouldQueue
      */
     public function handle()
     {
-        $transaction = Transaction::where("id", $this->details["transactionId"]["id"])->first();
+        $transaction = Transaction::where("id", $this->details["transactionId"]["id"])->withTrashed()->first();
         $authorName = $this->details["authorName"];
         $data = Payment::where("id", $transaction->payment_id)->first();
 

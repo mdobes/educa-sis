@@ -72,6 +72,8 @@ Route::controller(\App\Http\Controllers\User\UserGroupController::class)->prefix
 
 Route::controller(\App\Http\Controllers\Payment\TransactionsController::class)->group(function () {
     Route::post("/transaction", "store")->name("transaction.store");
+    Route::get("/transaction/{id}/unpair", "unPair")->name("transaction.unpair");
+    Route::get("/transaction/{id}/restore", "restorePair")->withTrashed()->name("transaction.restorePair");
 })->middleware('auth');
 
 
