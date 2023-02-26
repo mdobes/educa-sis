@@ -10,7 +10,7 @@ RUN apt-get update \
     zip \
     supervisor
 
-ADD .docker/php/supervisor.conf /etc/supervisor/conf.d/worker.conf
+ADD .docker/php/queue.conf /etc/supervisor/conf.d/queue.conf
 
 RUN \
 apt-get install libldap2-dev libldap-common -y && \
