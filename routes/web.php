@@ -18,18 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\IndexController::class, "index"])->name("index")->middleware('auth');
 
-Route::get('/users', function () {
-    $users = User::all();
-    return $users;
-})->middleware('auth');
-
-Route::get('/groups', function () {
-    $users = \LdapRecord\Models\ActiveDirectory\ExchangeServer::all();
-    return $users;
-})->middleware('auth');
-
-Route::get('/giverole', [\App\Http\Controllers\IndexController::class, "giveStudentRole"]);
-
 Route::get("/payment/banklog", [\App\Http\Controllers\Payment\BankPaymentsLogController::class, "index"])->name("payment.banklog");
 Route::get("/payment/banklog/search", [\App\Http\Controllers\Payment\BankPaymentsLogController::class, "search"])->name("payment.banklog.search");
 

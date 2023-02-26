@@ -28,11 +28,4 @@ class IndexController extends Controller
         $vocativ = $name->vocative( Str::before(Auth::user()->name, " "));
         return view("index", compact("vocativ"));
     }
-
-
-    public function giveStudentRole(){
-        Permission::findOrCreate("admin");
-        $users = Auth::user()->givePermissionTo('admin');
-        return redirect()->route("index");
-    }
 }

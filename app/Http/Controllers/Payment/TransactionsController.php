@@ -41,7 +41,7 @@ class TransactionsController extends Controller
         $user = Auth::user();
         $username = $user->username;
 
-        if($payment->author == $username || $user->hasPermissionTo('payments.any.transaction')) {
+        if($payment->author == $username || $user->hasPermissionTo('admin')) {
             if($data["amount"] <= $payment->remain){
                 $transaction = Transaction::create($data);
 
@@ -114,24 +114,36 @@ class TransactionsController extends Controller
     }
 
     public function unPair(Transaction $id){
-        //TODO: práva
-        $details['authorName'] = Auth::user()->name;
-        $details['paymentId'] = $id->payment_id;
-        $details["username"] = $id->author;
-        $details["transactionId"] = $id;
-        $id->delete();
-        dispatch(new SendTransactionCreatedJob($details));
-        return redirect()->route("payment.detail", $id->payment->id);
+        $user = Auth::user();
+        $username = $user->username;
+        $payment = Payment::find($id->payment_id);
+        if($payment->author == $username || $user->hasPermissionTo('admin')) {
+            $details['authorName'] = Auth::user()->name;
+            $details['paymentId'] = $id->payment_id;
+            $details["username"] = $id->author;
+            $details["transactionId"] = $id;
+            $id->delete();
+            dispatch(new SendTransactionCreatedJob($details));
+            return redirect()->route("payment.detail", $id->payment->id);
+        }else{
+            return abort(403);
+        }
     }
 
     public function restorePair(Transaction $id){
-        //TODO: práva
-        $details['authorName'] = Auth::user()->name;
-        $details['paymentId'] = $id->payment_id;
-        $details["username"] = $id->author;
-        $details["transactionId"] = $id;
-        $id->restore();
-        dispatch(new SendTransactionCreatedJob($details));
-        return redirect()->route("payment.detail", $id->payment->id);
+        $user = Auth::user();
+        $username = $user->username;
+        $payment = Payment::find($id->payment_id);
+        if($payment->author == $username || $user->hasPermissionTo('admin')) {
+            $details['authorName'] = Auth::user()->name;
+            $details['paymentId'] = $id->payment_id;
+            $details["username"] = $id->author;
+            $details["transactionId"] = $id;
+            $id->restore();
+            dispatch(new SendTransactionCreatedJob($details));
+            return redirect()->route("payment.detail", $id->payment->id);
+        }else{
+            return abort(403);
+        }
     }
 }
