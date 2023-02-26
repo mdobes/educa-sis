@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PaymentRequest;
 use App\Http\Requests\Payment\SearchPaymentRequest;
-use App\Http\Requests\Payment\ShowGroupRequest;
 use App\Jobs\SendPaymentCreatedJob;
 use App\Models\Payment\Group;
 use App\Models\Payment\Payment;
@@ -120,10 +119,9 @@ class PaymentController extends Controller
                         return ["specific_symbol" => 0];
                     });
 
-                    $data = $request->only("title", "amount", "due");
+                    $data = $request->only("title", "amount", "due", "type");
                     $data["payer"] = $info[1];
                     $data["specific_symbol"] = $payment["specific_symbol"] + 1;
-                    $data["type"] = "normal";
                     $data["author"] = $username;
                     $data["group"] = $group["id"];
 
@@ -141,10 +139,9 @@ class PaymentController extends Controller
                             return ["specific_symbol" => 0];
                         });
 
-                        $data = $request->only("title", "amount", "due");
+                        $data = $request->only("title", "amount", "due", "type");
                         $data["payer"] = $u;
                         $data["specific_symbol"] = $payment["specific_symbol"] + 1;
-                        $data["type"] = "normal";
                         $data["author"] = $username;
                         $data["group"] = $group["id"];
 

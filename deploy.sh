@@ -17,13 +17,13 @@ sudo docker-compose -f ${REPO_PATH}/docker-compose.yml up --build -d
 
 sudo docker exec -e COMPOSER_MEMORY_LIMIT=-1 web-educasis composer install --no-scripts
 sudo docker exec web-educasis composer dump-autoload --optimize --classmap-authoritative
-sudo docker exec web-educasis php artisan cache:clear
 sudo docker exec web-educasis php artisan route:clear
 sudo docker exec web-educasis php artisan view:clear
 sudo docker exec web-educasis php artisan migrate --force
 sudo docker exec web-educasis php artisan ldap:import users --delete-missing
+sudo docker exec web-educasis php artisan command:exchangeadobejwt
+sudo docker exec web-educasis php artisan command:getazurebearertoken
 sudo docker exec web-educasis php artisan command:createadminpermission
-
 
 sudo chmod -R 0777 ${REPO_PATH}
 

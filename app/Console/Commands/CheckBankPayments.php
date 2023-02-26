@@ -63,7 +63,8 @@ class CheckBankPayments extends Command
                 foreach($json->transactions as $payment){
                     if(!BankPaymentsLog::where("transaction_id", $payment->transactionId)->first()) {
 
-                        $userId = User::select("username")->where("id", $payment->variableSymbol ?? null)->first()->username ?? null;
+                        $userPayer = User::where("id", $payment->variableSymbol ?? null)->first() ?? null;
+                        $userId = $userPayer->username ?? null;
                         if ($userId) {
                             $paymentId = Payment::select("id")->where("payer", $userId)->where("specific_symbol", $payment->specificSymbol)->first();
 
@@ -75,6 +76,52 @@ class CheckBankPayments extends Command
                                 $details["username"] = "System";
                                 $details["transactionId"] = $transaction;
                                 dispatch(new SendTransactionCreatedJob($details));
+
+                                if($paymentId->remain <= 0){
+                                    User::where("username", $userPayer->username)->update(["adobe_until" => \Carbon\Carbon::parse($userPayer->adobe_until ?? Carbon::now())->add(config("adobe.days"))->format("Y-m-d 23:59")]);
+
+                                    $name = explode(" ", $userPayer->name);
+
+                                    $client = new Client();
+                                    $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
+                                        'headers' => [
+                                            'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
+                                            'Content-type' => 'application/json',
+                                            'Accept' => 'application/json',
+                                            'X-Api-Key' => config("adobe.client_id")
+                                        ],
+                                        'json' => [[
+                                            'user' => $userPayer->email,
+                                            'do' => [[
+                                                'addAdobeID' => [
+                                                    'email' => $userPayer->email,
+                                                    'country' => "CZ",
+                                                    'firstname' => $name[0],
+                                                    'lastname' => $name[1],
+                                                    "option" => "ignoreIfAlreadyExists"
+                                                ]
+                                            ]]
+                                        ]]
+                                    ]);
+
+                                    $client = new Client();
+                                    $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
+                                        'headers' => [
+                                            'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
+                                            'Content-type' => 'application/json',
+                                            'Accept' => 'application/json',
+                                            'X-Api-Key' => config("adobe.client_id")
+                                        ],
+                                        'json' => [[
+                                            'user' => $userPayer->email,
+                                            'do' => [[
+                                                'add' => [
+                                                    'group' => [config("adobe.group_id")]
+                                                ]
+                                            ]]
+                                        ]]
+                                    ]);
+                                }
                             }
                         }
 

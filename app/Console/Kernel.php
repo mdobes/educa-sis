@@ -12,7 +12,10 @@ class Kernel extends ConsoleKernel
         Commands\CheckBankPayments::class,
         Commands\GetAzureBearerToken::class,
         Commands\AssignAdminUser::class,
-        Commands\CreateAdminPermission::class
+        Commands\CreateAdminPermission::class,
+        Commands\ExchangeAdobeJwt::class,
+        Commands\RemoveAdobeUsers::class,
+        Commands\SyncAdobeUsers::class
     ];
 
     /**
@@ -26,6 +29,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:checkbankpayments')->everyMinute();
         $schedule->command('command:getazurebearertoken')->everyThirtyMinutes();
         $schedule->command('ldap:import users')->daily();
+        $schedule->command('command:exchangeadobejwt')->everyThirtyMinutes();
+        $schedule->command('command:removeadobeusers')->hourly();
     }
 
     /**

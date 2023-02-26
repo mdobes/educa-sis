@@ -9,6 +9,7 @@
         "dfridrich/qr-platba": "2.0.2",
         "directorytree/ldaprecord-laravel": "^2.7",
         "doctrine/dbal": "^3.6",
+        "firebase/php-jwt": "^6.4",
         "granam/czech-vocative": "^2.2",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^9.19",
