@@ -13,7 +13,7 @@ cd "${REPO_PATH}" &&
   git reset --hard origin/main &&
   git pull
 
-sudo docker-compose -f ${REPO_PATH}/docker-compose.yml up --build -d
+sudo docker-compose -f ${REPO_PATH}/docker-compose.yml up --build -d --force-recreate
 
 sudo docker exec -e COMPOSER_MEMORY_LIMIT=-1 web-educasis composer install --no-scripts
 sudo docker exec web-educasis composer dump-autoload --optimize --classmap-authoritative
