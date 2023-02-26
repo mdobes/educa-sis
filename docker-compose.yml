@@ -15,7 +15,6 @@ services:
         volumes:
             - ./:/var/www/html/
             - ./.docker/ldap.conf:/etc/ldap/ldap.conf
-            - ./.docker/queue.conf:/etc/supervisor/conf.d/worker.conf
         networks:
             - "default"
 networks:

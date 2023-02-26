@@ -7,10 +7,8 @@ RUN apt-get update \
     libgd-dev \
     curl \
     libzip-dev \
-    zip \
-    supervisor
+    zip
 
-ADD .docker/php/queue.conf /etc/supervisor/conf.d/queue.conf
 
 RUN \
 apt-get install libldap2-dev libldap-common -y && \
@@ -32,5 +30,4 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 WORKDIR /var/www/html/
-CMD ["/usr/bin/supervisord"]
 EXPOSE 8050
