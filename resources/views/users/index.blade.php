@@ -9,6 +9,7 @@
             <th scope="col" data-field="name">Zobrazované jméno</th>
             <th scope="col" data-field="email">E-mail</th>
             <th scope="col" data-field="displayPermission">Oprávnění</th>
+            <th scope="col" data-formatter="adobeFormatter">Adobe</th>
             <th scope="col" data-formatter="operateFormatter">Akce</th>
         </tr>
         </thead>
@@ -30,6 +31,14 @@
             return [
                 `<a data-bs-toggle="tooltip" data-bs-title="Upravit uživatele" href="/user/${row.id}" class="text-decoration-none"><i class="ti ti-edit"></i></a>`,
             ].join('')
+        }
+
+        function adobeFormatter(value, row, index) {
+            if(row.adobe_until){
+                return "Ano (do: " + row.adobe_until + ")"
+            }else{
+                return "Ne"
+            }
         }
     </script>
 @endsection
