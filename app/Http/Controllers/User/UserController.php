@@ -45,7 +45,7 @@ class UserController extends Controller
             if ($permission == "teacher" && $dbUser->permission !== "teacher" && $dbUser->permission !== "admin" || $permission == "admin") {
                 if ($request->post("noPassword") == "true") {
                     $adUser = \LdapRecord\Models\ActiveDirectory\User::findByGuid($dbUser->guid);
-                    $str = Str::random(5);
+                    $str = config("app.default_password");
                     $adUser->update(['pwdlastset' => 0]);
                     $adUser->unicodepwd = $str;
                     return redirect()->route("users.index")->withErrors(['msg' => "Uživateli $dbUser->username bylo změneno heslo na $str"]);

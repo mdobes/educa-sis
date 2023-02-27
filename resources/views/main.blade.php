@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="{{asset("assets/css/select2.min.css")}}">
     <link rel="stylesheet" href="{{asset("assets/css/select2-bootstrap-5-theme.min.css")}}">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css">
+    <style>
+        .clickable-row:hover {
+            background-color: var(--bs-secondary-bg-subtle);
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary mt-2 mb-2 shadow">

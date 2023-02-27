@@ -54,7 +54,7 @@ class TransactionsController extends Controller
                     if($payment->remain <= 0){
 
                         $userEdit = User::where("username", $payment->payer)->firstOrFail();
-                        $name = explode(" ", $user->name);
+                        $name = explode(" ", $userEdit->name);
 
                         User::where("username", $payment->payer)->update(["adobe_until" => Carbon::parse($userEdit->adobe_until ?? Carbon::now())->add(config("adobe.days"))->format("Y-m-d 23:59")]);
 

@@ -17,6 +17,7 @@ return [
 
     'name' => env('APP_NAME', 'Educa SIS'),
     'version' => '0.8.0',
+    'default_password' => env("APP_DEFAULTPASS"),
 
     /*
     |--------------------------------------------------------------------------

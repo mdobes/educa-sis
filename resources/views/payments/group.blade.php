@@ -20,7 +20,7 @@
         </thead>
         <tbody>
         @foreach($group->payments as $p)
-            <tr @if($p->remain == 0) class="bg-success-subtle" @endif>
+            <tr class="@if($p->remain == 0)bg-success-subtle @endif clickable-row" data-href="/payment/{{$p->id}}">
                 <td>{{$p->payerFormatted}}</td>
                 <td>{{$p->amountFormatted}}</td>
                 <td>{{$p->remainFormatted}}</td>
@@ -28,6 +28,7 @@
                 <td>{{$p->transactionsCash}}/{{$p->transactionsBank}} Kč</td>
                 <td><a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail platby" href="/payment/{{$p->id}}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a></td>
             </tr>
+            </a>
         @endforeach
         </tbody>
     </table>
@@ -36,4 +37,14 @@
         <b>Celkem zaplaceno hotově:</b> {{$group->paidCash}} Kč<br>
         <b>Celkem zaplaceno bankovním převodem:</b> {{$group->paidBank}} Kč
     </p>
+@endsection
+
+@section("scripts")
+    <script>
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
 @endsection

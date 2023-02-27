@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    <table class="table" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true" data-side-pagination="server"  data-pagination="true">
+    <table class="table" data-classes="table-striped" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true" data-side-pagination="server"  data-pagination="true">
         <thead>
         <tr>
             <th scope="col" data-field="name">Název skupiny</th>
@@ -56,5 +56,6 @@
                 `<a data-bs-toggle="tooltip" data-bs-title="Zobrazit detail skupiny" href="/payment/group/${row.id}" class="text-decoration-none"><i class="ti ti-info-circle"></i></a>`,
             ].join('')
         }
+
     </script>
 @endsection

@@ -9,7 +9,7 @@
 @endsection
 
 @section("content")
-    <table class="table" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true"  data-side-pagination="server"  data-pagination="true">
+    <table class="table" data-classes="table-striped" data-locale="cs-CZ" data-toggle="table" data-ajax="ajaxRequest" data-search="true"  data-side-pagination="server"  data-pagination="true">
         <thead>
         <tr>
             <th scope="col" data-field="name">Název skupiny</th>
