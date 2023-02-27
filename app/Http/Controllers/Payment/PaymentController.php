@@ -120,6 +120,11 @@ class PaymentController extends Controller
                     });
 
                     $data = $request->only("title", "amount", "due", "type");
+
+                    if($user->permission !== "admin"){
+                        $data["type"] = "normal";
+                    }
+
                     $data["payer"] = $info[1];
                     $data["specific_symbol"] = $payment["specific_symbol"] + 1;
                     $data["author"] = $username;
@@ -141,6 +146,11 @@ class PaymentController extends Controller
 
                         $data = $request->only("title", "amount", "due", "type");
                         $data["payer"] = $u;
+
+                        if($user->permission !== "admin"){
+                            $data["type"] = "normal";
+                        }
+
                         $data["specific_symbol"] = $payment["specific_symbol"] + 1;
                         $data["author"] = $username;
                         $data["group"] = $group["id"];
