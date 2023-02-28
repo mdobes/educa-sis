@@ -58,6 +58,7 @@ class RemoveAdobeUsers extends Command
             }catch(\Throwable $exception){
                 Log::alert("Nastala chyba.");
             }
+            sleep(1);
         }
         return Command::SUCCESS;
     }
