@@ -64,12 +64,6 @@
     </div>
 </nav>
 
-@if(isset($message))
-    <div class="alert alert-danger" role="alert">
-        {{$message}}
-    </div>
-@endif
-
 <div class="container mt-5 mb-5">
 
     @hasSection('title')

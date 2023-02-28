@@ -54,7 +54,7 @@ class RemoveAdobeUsers extends Command
                 ]);
 
                 User::where("username", $user->username)->update(["adobe_until" => null]);
-                Log::info("Uživateli $user->name byl úspětně odebrán přístup od Adobe.");
+                Log::info("Uživateli $user->name byl úspěšně odebrán přístup od Adobe.");
             }catch(\Throwable $exception){
                 Log::alert("Nastala chyba.");
             }
