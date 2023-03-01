@@ -83,7 +83,7 @@ class UserGroupController extends Controller
                     $user = User::where("username", $username)->first();
                     if (!$user) array_push($userListNotExist, $username);
                 }
-                if (!empty($userListNotExist)) return redirect()->back()->withErrors(['msg' => 'Uživatelé s uživatelskými jmény ' . implode(",", $username) . ' neexistuje.'])->withInput($request->all());
+                if (!empty($userListNotExist)) return redirect()->back()->withErrors(['msg' => 'Uživatelé s uživatelskými jmény ' . implode(",", $userListNotExist) . ' neexistuje.'])->withInput($request->all());
                 UserGroup::create(["name" => $request->post("name"), "users" => $request->post("users")]);
                 return redirect()->route("usergroup.index");
             } else {
