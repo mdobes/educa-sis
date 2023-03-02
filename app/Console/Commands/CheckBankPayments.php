@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\CreateAdobeUserJob;
+use App\Jobs\RemoveAdobeUserJob;
 use App\Jobs\SendTransactionCreatedJob;
 use App\Models\Payment\BankPaymentsLog;
 use App\Models\Payment\Payment;
@@ -78,49 +80,8 @@ class CheckBankPayments extends Command
                                 dispatch(new SendTransactionCreatedJob($details));
 
                                 if($paymentId->remain <= 0){
-                                    User::where("username", $userPayer->username)->update(["adobe_until" => \Carbon\Carbon::parse($userPayer->adobe_until ?? Carbon::now())->add(config("adobe.days"))->format("Y-m-d 23:59")]);
-
-                                    $name = explode(" ", $userPayer->name);
-
-                                    $client = new Client();
-                                    $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
-                                        'headers' => [
-                                            'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
-                                            'Content-type' => 'application/json',
-                                            'Accept' => 'application/json',
-                                            'X-Api-Key' => config("adobe.client_id")
-                                        ],
-                                        'json' => [[
-                                            'user' => $userPayer->email,
-                                            'do' => [[
-                                                'addAdobeID' => [
-                                                    'email' => $userPayer->email,
-                                                    'country' => "CZ",
-                                                    'firstname' => $name[0],
-                                                    'lastname' => $name[1],
-                                                    "option" => "ignoreIfAlreadyExists"
-                                                ]
-                                            ]]
-                                        ]]
-                                    ]);
-
-                                    $client = new Client();
-                                    $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
-                                        'headers' => [
-                                            'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
-                                            'Content-type' => 'application/json',
-                                            'Accept' => 'application/json',
-                                            'X-Api-Key' => config("adobe.client_id")
-                                        ],
-                                        'json' => [[
-                                            'user' => $userPayer->email,
-                                            'do' => [[
-                                                'add' => [
-                                                    'group' => [config("adobe.group_id")]
-                                                ]
-                                            ]]
-                                        ]]
-                                    ]);
+                                    $adobeJob = ["payer" => $userPayer->username];
+                                    dispatch(new CreateAdobeUserJob($adobeJob));
                                 }
                             }
                         }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\TransactionRequest;
+use App\Jobs\CreateAdobeUserJob;
+use App\Jobs\RemoveAdobeUserJob;
 use App\Jobs\SendTransactionCreatedJob;
 use App\Models\Payment\Payment;
 use App\Models\Payment\Transaction;
@@ -50,55 +52,10 @@ class TransactionsController extends Controller
                 $details["username"] = $data["author"];
                 $details["transactionId"] = $transaction;
 
-                if($payment->type == "adobe"){
-                    if($payment->remain <= 0){
-
-                        $userEdit = User::where("username", $payment->payer)->firstOrFail();
-                        $name = explode(" ", $userEdit->name);
-
-                        User::where("username", $payment->payer)->update(["adobe_until" => Carbon::parse($userEdit->adobe_until ?? Carbon::now())->add(config("adobe.days"))->format("Y-m-d 23:59")]);
-
-                        $client = new Client();
-                        $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
-                                'Content-type' => 'application/json',
-                                'Accept' => 'application/json',
-                                'X-Api-Key' => config("adobe.client_id")
-                            ],
-                            'json' => [[
-                                'user' => $userEdit->email,
-                                'do' => [[
-                                    'addAdobeID' => [
-                                        'email' => $userEdit->email,
-                                        'country' => "CZ",
-                                        'firstname' => $name[0],
-                                        'lastname' => $name[1],
-                                        "option" => "ignoreIfAlreadyExists"
-                                    ]
-                                ]]
-                            ]]
-                        ]);
-
-                        $client = new Client();
-                        $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
-                                'Content-type' => 'application/json',
-                                'Accept' => 'application/json',
-                                'X-Api-Key' => config("adobe.client_id")
-                            ],
-                            'json' => [[
-                                'user' => $userEdit->email,
-                                'do' => [[
-                                    'add' => [
-                                        'group' => [config("adobe.group_id")]
-                                    ]
-                                ]]
-                            ]]
-                        ]);
-
-
+                if($payment->type == "adobe") {
+                    if ($payment->remain <= 0) {
+                        $adobeJob = ["payer" => $payment->payer];
+                        dispatch(new CreateAdobeUserJob($adobeJob));
                     }
                 }
 
@@ -124,6 +81,9 @@ class TransactionsController extends Controller
             $details["transactionId"] = $id;
             $id->delete();
             dispatch(new SendTransactionCreatedJob($details));
+
+            $adobeJob = ["payer" => $payment->payer];
+            dispatch(new RemoveAdobeUserJob($adobeJob));
             return redirect()->route("payment.detail", $id->payment->id);
         }else{
             return abort(403);
@@ -141,6 +101,9 @@ class TransactionsController extends Controller
             $details["transactionId"] = $id;
             $id->restore();
             dispatch(new SendTransactionCreatedJob($details));
+
+            $adobeJob = ["payer" => $payment->payer];
+            dispatch(new CreateAdobeUserJob($adobeJob));
             return redirect()->route("payment.detail", $id->payment->id);
         }else{
             return abort(403);

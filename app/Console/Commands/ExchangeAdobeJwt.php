@@ -59,16 +59,6 @@ EOD;
         $key = json_decode($response->getBody())->access_token;
         Cache::put('adobeKey' , $key);
 
-        $client = new Client();
-        $response = $client->get("https://usermanagement.adobe.io/v2/usermanagement/organizations/3669C9DC59708DE00A495C1E@AdobeOrg/users/michal.dobes@educa-sos.eu", [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $key,
-                'X-Api-Key' => config("adobe.client_id")
-            ],
-        ]);
-
-        var_dump(json_decode($response->getBody()));
-
         return Command::SUCCESS;
     }
 }

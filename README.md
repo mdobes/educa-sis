@@ -10,4 +10,4 @@ Systém zajištuje:
 - import skupin uživatelů pomocí Microsoft GraphQL API
 - správu uživatelů Adobe Creative Cloudu pomocí Adobe REST API   
 
-Licence: Creative Commons – Uveďte autora Neužívejte komerčně – Nezasahujte do díla 3 .0 Česko
+Licence: Creative Commons – Uveďte autora Neužívejte komerčně – Nezasahujte do díla 3.0 Česko

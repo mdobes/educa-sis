@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\CreateAdobeUserJob;
+use App\Jobs\RemoveAdobeUserJob;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -32,28 +34,11 @@ class RemoveAdobeUsers extends Command
      */
     public function handle()
     {
-        $users = User::where("adobe_until", '<=', Carbon::now()->format("Y-m-d H:i:s"))->get();
+        $users = User::select(["username", "adobe_until", "name"])->where("adobe_until", '<=', Carbon::now()->format("Y-m-d H:i:s"))->get();
         foreach($users as $user){
             try{
-                $client = new Client();
-                $response = $client->post("https://usermanagement.adobe.io/v2/usermanagement/action/" . config("adobe.org_id"), [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . Cache::get('adobeKey'),
-                        'Content-type' => 'application/json',
-                        'Accept' => 'application/json',
-                        'X-Api-Key' => config("adobe.client_id")
-                    ],
-                    'json' => [[
-                        'user' => $user->email,
-                        'do' => [[
-                            'removeFromOrg' => [
-                                'deleteAccount' => true
-                            ]
-                        ]]
-                    ]]
-                ]);
-
-                User::where("username", $user->username)->update(["adobe_until" => null]);
+                $adobeJob = ["payer" => $user->username];
+                dispatch(new RemoveAdobeUserJob($adobeJob));
                 Log::info("Uživateli $user->name byl úspěšně odebrán přístup od Adobe.");
             }catch(\Throwable $exception){
                 Log::alert("Nastala chyba.");
