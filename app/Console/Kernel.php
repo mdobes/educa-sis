@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
         Commands\CreateAdminPermission::class,
         Commands\ExchangeAdobeJwt::class,
         Commands\RemoveAdobeUsers::class,
-        Commands\SyncAdobeUsers::class
+        Commands\SyncAdobeUsers::class,
+        Commands\ExpiringAdobeMail::class
     ];
 
     /**
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('ldap:import users')->daily();
         $schedule->command('command:exchangeadobejwt')->everyThirtyMinutes();
         $schedule->command('command:removeadobeusers')->hourly();
+        $schedule->command('command:expiringadobemail')->dailyAt("7:00");
     }
 
     /**
